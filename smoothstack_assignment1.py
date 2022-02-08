@@ -10,5 +10,7 @@ def func(P: int, R : int, L : int) -> int:
 if __name__ == '__main__':
     print(50+50)
     print(100 - 10)
+    print(pow(6,6))
+    print(6+6+6+6+6+6)
     print("Hello World: 10")
     print("answer = ", func(800000,6,103))
