@@ -54,7 +54,8 @@ if __name__ == '__main__':
             even_amt += 1
         else:
             odd_amt += 1
-
+    print("Number of even numbers : ", even_amt)
+    print("Number of odd numbers : ", odd_amt)
 
     #Write a Python program that prints each item and its corresponding type from the following list.
     datalist = [1452, 11.23, 1+2j, True, 'w3resource', (0, -1), [5, 12], {"class":'V', "section":'A'}]
