@@ -23,10 +23,6 @@ class InputOutString(object):
     def test_function(self):
         self.printString(self.getString())
 
-
-
-
-
 if __name__ == '__main__':
     #start of coding exersice 4:
     lst = [1,"hello", 4.5]
