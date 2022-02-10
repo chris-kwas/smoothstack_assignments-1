@@ -30,6 +30,16 @@ if __name__ == '__main__':
 
 
     #Write a Python program to construct the following pattern, using a nested for loop.
+    # * 
+    # * * 
+    # * * * 
+    # * * * * 
+    # * * * * * 
+    # * * * * 
+    # * * * 
+    # * * 
+    # *
+
     step = 1
     x = 1
     while x >= 1:

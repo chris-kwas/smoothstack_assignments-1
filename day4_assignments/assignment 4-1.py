@@ -68,31 +68,30 @@ def func13(text):
             new_text += text[x]
     return new_text
 
-if __name__ == '__main__':
-    #start of coding exersice 8:
-    #1.Create a function func() which prints a text ‘Hello World’
-    func()
-    #2.Create a function which func1(name)  which takes a value name and prints the output “Hi My name is Google’
-    func1("Google")
-    #3.Define a function func3(x,y,z) that takes three arguments x,y,z where z is true it will return x and when z is false it should return y . func3(‘hello’goodbye’,false)
-    func3("hello","goodbye", False)
-    #4.define a function func4(x,y) which returns the product of both the values.
-    func4(1, 2)
-    #5.define a function called as is_even that takes one argument , which returns true when even values is passed and false if it is not.
-    is_even(56)
-    #6.define a function that takes two arguments ,and returns true if the first value is greater than the second value and returns false if it is less than or equal to the second.
-    is_greaterthan(10, 7)
-    #7.Define a function which takes arbitrary number of arguments and returns the sum of the arguments.
-    print(addition(1,2,3,4))
-    #8.Define a function which takes arbitrary number of arguments and returns a list containing only the arguments that are even.
-    print(evens(1,2,3,4))
-    #9.Define a function that takes a string and returns a matching string where every even letter is uppercase and every odd letter is lowercase 
-    print(string_modifier("helLo"))
-    #10.Write a function which gives lesser than a given number if both the numbers are even, but returns greater if one or both or odd.
-    print(func10(6, 10))
-    #11.Write a function which takes  two-strings and returns true if both the strings start with the same letter.
-    print(func11("Hello", "House"))
-    #12.Given a value,return a value which is twice as far as other side of 7
-    print(func12(11))
-    #13.A function that capitalizes first and fourth character of a word in a string.
-    print(func13("hello"))
+#start of coding exersice 8:
+#1.Create a function func() which prints a text ‘Hello World’
+func()
+#2.Create a function which func1(name)  which takes a value name and prints the output “Hi My name is Google’
+func1("Google")
+#3.Define a function func3(x,y,z) that takes three arguments x,y,z where z is true it will return x and when z is false it should return y . func3(‘hello’goodbye’,false)
+func3("hello","goodbye", False)
+#4.define a function func4(x,y) which returns the product of both the values.
+func4(1, 2)
+#5.define a function called as is_even that takes one argument , which returns true when even values is passed and false if it is not.
+is_even(56)
+#6.define a function that takes two arguments ,and returns true if the first value is greater than the second value and returns false if it is less than or equal to the second.
+is_greaterthan(10, 7)
+#7.Define a function which takes arbitrary number of arguments and returns the sum of the arguments.
+print(addition(1,2,3,4))
+#8.Define a function which takes arbitrary number of arguments and returns a list containing only the arguments that are even.
+print(evens(1,2,3,4))
+#9.Define a function that takes a string and returns a matching string where every even letter is uppercase and every odd letter is lowercase 
+print(string_modifier("helLo"))
+#10.Write a function which gives lesser than a given number if both the numbers are even, but returns greater if one or both or odd.
+print(func10(6, 10))
+#11.Write a function which takes  two-strings and returns true if both the strings start with the same letter.
+print(func11("Hello", "House"))
+#12.Given a value,return a value which is twice as far as other side of 7
+print(func12(11))
+#13.A function that capitalizes first and fourth character of a word in a string.
+print(func13("hello"))
