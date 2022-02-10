@@ -47,9 +47,9 @@ def string_modifier(text):
 
 def func10(x, y):
     if x % 2 == 1 or y % 2 == 1:
-        return x if x > y else y
+        return "greater", x if x > y else y
     else:
-        return x if x < y else y
+        return "lesser", x if x < y else y
 
 def func11(string1, string2):
     if string1[0] == string2[0]:
