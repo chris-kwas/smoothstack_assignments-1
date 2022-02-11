@@ -29,7 +29,7 @@ def get_month_year(parsed):
     return (month_year[0],month_year[1])
 
 if __name__ == '__main__':#get rid of this line latter
-    path = "mini_project\expedia_report_monthly_january_2018.com"
+    path = "mini_project\expedia_report_monthly_january_2018.xlsx"
     file_name, extension = os.path.splitext(path)
     parse = parse_file_name(file_name)
     result = get_month_year(parse)
