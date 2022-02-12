@@ -7,7 +7,12 @@ import functools
 import os
 import datetime
 from datetime import date
+import logging
 
+logging.basicConfig(filename="mini_project\logs.log",filemode='w',level = logging.DEBUG, format = '%(asctime)s - %(levelname)s - %(messages)')
+
+
+logging.critical('This is a Critical message')
 
 def parse_file_name(file):
     #things to do for error checking
@@ -34,29 +39,56 @@ def get_month_year(parsed):#list of strings as input
     error("could not find month and year program terminated")
     quit()
 
+#funtion assumes the datetiems are in the first column
+# def get_month_year_cell_positions(sheet_obj,file_month, file_year):
+#     matching_datetime_cells = list()
+#     for row in sheet_obj.rows:
+#         cell = row[0].value
+#         if type(cell) == datetime.datetime:
+#             if cell.month == file_month and cell.year == file_year:
+#                 print(cell.month,cell.year, "got the cell row = {0} and the column {1}".format(row[0].row, row[0].column))
+#                 cell_coordinates = (row[0].row, row[0].column)
+#                 matching_datetime_cells.append(cell_coordinates)
+#     if len(matching_datetime_cells) == 0:
+#          error("Could not find")
+#          quit()
+#     return matching_datetime_cells
 
+#function does a smart scan
 def get_month_year_cell_positions(sheet_obj,file_month, file_year):
-    matching_datetime_cells = list()
-    for row in sheet_obj.rows:
-        cell = row[0].value
-        if type(cell) == datetime.datetime:
-            if cell.month == file_month and cell.year == file_year:
-                print(cell.month,cell.year, "got the cell row = {0} and the column {1}".format(row[0].row, row[0].column))
-                cell_coordinates = (row[0].row, row[0].column)
-                matching_datetime_cells.append(cell_coordinates)
+    matching_datetime_cells = list()#list of cell coordionates that met description
+    for row in sheet_obj:
+        for column in row:
+            if type(column.value) == datetime.datetime:
+                if column.value.month == file_month and column.value.year == file_year:#gets the exact datetime here
+                    cell_coordinates = (column.row, column.column)
+                    matching_datetime_cells.append(cell_coordinates)
+
     if len(matching_datetime_cells) == 0:
-         error("Could not find")
+         error("Could not find any suitable dates")
          quit()
+
     return matching_datetime_cells
 
 
-def get_row_information(sheet_obj, row, column):
-    print("The day of {0}".format(sheet_obj[str(row)][column - 1].value))
-    for x in range(1, len(sheet_obj[str(row)])):
-        colummn_title = sheet_obj[1][x].value
-        column_value = sheet_obj[str(row)][x].value
-        if colummn_title != None and column_value != None:
-            print("{0} value = {1}".format(colummn_title,column_value))#can use 1 since tod column name with be on top
+# def get_row_information(sheet_obj, row, column):#assumes datetime is first column
+#     #print("The day of {0}".format(sheet_obj[str(row)][column - 1].value))
+#     for x in range(1, len(sheet_obj[str(row)])):
+#         colummn_title = sheet_obj[1][x].value
+#         column_value = sheet_obj[str(row)][x].value
+#         if colummn_title != None and column_value != None:
+#             print("{0} value = {1}".format(colummn_title,column_value))#can use 1 since the column name with be on top
+
+def get_row_information(sheet_obj, row, column):#assumes datetime can be in any column
+    #row_info = sheet_obj[row]
+
+    for x in range(column, len(sheet_obj[row])):#-1 is to compensate for the none in the column 1,1 gets the datetime back
+        cell_value = sheet_obj.cell(row, column + x).value
+        cell_column_name = sheet_obj.cell(1, column + x).value#can use 1 since the column name with be on top
+        if (cell_value == None and cell_column_name == None) == False:
+            print("{} : {}".format(cell_column_name, cell_value))
+
+
 
 #--------------------------------------------------------------------------
 #IMPORTANT ASK ABOUT NEEDING TO LOOK AT THE OTHER WORK SHEETS IN THE PROJECT -- first sheet only
@@ -66,19 +98,22 @@ def get_row_information(sheet_obj, row, column):
 #needs to be able to show all instance that could apply not just one
 #log message ex picked up file and processed file
 if __name__ == '__main__':#get rid of this line latter
-    path = "mini_project\expedia_report_monthly_march_2018.xlsx"#make so program accepts only excel file
+    path = "mini_project\expedia_report_monthly_january_2018.xls1x"#make so program accepts only excel file
     file_name, extension = os.path.splitext(path)
+    if extension != ".xlsx":
+        logging.critical("File type {} is not supported".format(extension))
+        quit()
     parse = parse_file_name(file_name)
     print(parse)
     file_name_month, file_name_year = get_month_year(parse)
-    print("file_name_month = {}, file_name_year = {}".format(file_name_month, file_name_year))
+    #print("file_name_month = {}, file_name_year = {}".format(file_name_month, file_name_year))
 
     wb_obj = openpyxl.load_workbook(path, read_only=True)
     sheet_obj= wb_obj.active
     cell_positions = get_month_year_cell_positions(sheet_obj, file_name_month, file_name_year)#return list of (row,column)
-    print(cell_positions)
+    #print(cell_positions)
     
     for match in cell_positions:# so am able to handle all instances that can fit the described time frame
-        get_row_information(sheet_obj, match[0], match[1])
+        get_row_information(sheet_obj, match[0], match[1])#to do convert numbers to how they appear in the sheet
 
 
