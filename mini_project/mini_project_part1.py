@@ -7,6 +7,22 @@ import logging
 
 logging.basicConfig(filename="mini_project\logs.log",filemode='w',level = logging.DEBUG, format = '%(asctime)s - %(levelname)s - %(message)s')
 
+def verify_file_name(path, extension):
+    flag = True
+    if relative_path.isfile(path) == False:
+        logging.error("Provided path {0} is not a file program ended".format(path))
+        flag = False
+    if extension != ".xlsx":
+        logging.critical("File type {0} is not supported".format(extension))
+        flag = False
+    if relative_path.exists(path) == False or flag == False:
+        logging.critical("File {0} not found program ended".format(path))
+    else:
+        logging.info("File {0} successfully found".format(path))
+        return flag
+    return flag        
+
+
 def parse_file_name(file):
     replacements = ('_', '.')
     file = functools.reduce(lambda s, sep: s.replace(sep, ' '), replacements, file)#study this line more for latter
@@ -30,11 +46,11 @@ def get_month_year(parsed):#list of strings as input
         except:
             logging.warning("Still search for year and month from file name")
 
-    logging.critical("could not find month and year program terminated")
+    logging.critical("could not find month and year program ended")
     quit()
 
 #function does a smart scan
-def get_month_year_cell_positions(sheet_obj,file_month, file_year):
+def get_month_year_cell_positions(sheet_obj, file_month, file_year):
     matching_datetime_cells = list()#list of cell coordionates that met description
     logging.debug("Starting search for all locations of rows with information about report on month {0} and year {1}".format(file_month, file_year))
     for row in sheet_obj:
@@ -76,18 +92,18 @@ def get_row_information(sheet_obj, row, column):#assumes datetime can be in any 
 #log message ex picked up file and processed file
 #if __name__ == '__main__':#get rid of this line latter
 logging.debug("Start of program")
-path = "mini_project\expedia_report_monthly_march_2018.xlsx"#make so program accepts only excel file
+path = "mini_project\expedia_report_monthly_january_2018.xlsx"#make so program accepts only excel file
 logging.debug("Check to see if file path exists")
 
+#important to do add for is_proper_path (basically the ifs and else into a function)
 file_name, extension = os.path.splitext(path)
-if extension != ".xlsx":
-    logging.critical("File type {0} is not supported".format(extension))
-    quit()
-if relative_path.exists(path) == False:
-    logging.critical("File {0} not found program terminated".format(path))
+
+if verify_file_name(path, extension) == False:
+    logging.critical("file name {0} could not be verify program ended".format(path))
     quit()
 else:
-    logging.info("File {0} successfully found".format(path))
+    logging.info("file name {0} could be verified program continuing".format(path))
+
 
 logging.debug("Starting to parse file name {0}".format(path))
 parse = parse_file_name(file_name)
@@ -106,8 +122,8 @@ logging.info("Successfully loaded excel worksheet")
 cell_positions = get_month_year_cell_positions(sheet_obj, file_name_month, file_name_year)#return list of (row,column)
 #print(cell_positions)
 
-for match in cell_positions:# so am able to handle all instances that can fit the described time frame
-    get_row_information(sheet_obj, match[0], match[1])#to do : convert numbers to how they appear in the sheet
+for match in cell_positions:# to be able to handle all instances that can fit the described time frame
+    get_row_information(sheet_obj, match[0], match[1])
 logging.info("programing successfuly finished execution")
 
 
