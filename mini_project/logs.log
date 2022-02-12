@@ -1,26 +1,26 @@
-2022-02-12 14:30:24,256 - DEBUG - Start of program mini_project
-2022-02-12 14:30:24,256 - DEBUG - Check to see if file path exists
-2022-02-12 14:30:24,256 - INFO - File mini_project\expedia_report_monthly_march_2018.xlsx successfully found
-2022-02-12 14:30:24,256 - INFO - file name mini_project\expedia_report_monthly_march_2018.xlsx could be verified program continuing
-2022-02-12 14:30:24,256 - DEBUG - Starting to parse file name mini_project\expedia_report_monthly_march_2018.xlsx
-2022-02-12 14:30:24,256 - INFO - Successfuly parse file_name mini_project\expedia_report_monthly_march_2018.xlsx and is of supported type .xlsx
-2022-02-12 14:30:24,256 - DEBUG - Starting search for month and year from parse of file name mini_project\expedia_report_monthly_march_2018.xlsx
-2022-02-12 14:30:24,259 - WARNING - Still search for year and month from file name
-2022-02-12 14:30:24,259 - WARNING - Still search for year and month from file name
-2022-02-12 14:30:24,259 - WARNING - Still search for year and month from file name
-2022-02-12 14:30:24,259 - WARNING - Still search for year and month from file name
-2022-02-12 14:30:24,259 - INFO - Found month from file name 3
-2022-02-12 14:30:24,259 - INFO - Found year from file name 2018
-2022-02-12 14:30:24,259 - INFO - Completed search for month and year from file name mini_project\expedia_report_monthly_march_2018.xlsx : file_name_month = 3, file_name_year = 2018
-2022-02-12 14:30:24,259 - DEBUG - Starting to load excel worksheet
-2022-02-12 14:30:24,285 - INFO - Successfully loaded excel worksheet
-2022-02-12 14:30:24,285 - DEBUG - Starting search for all locations of rows with information about report on month 3 and year 2018
-2022-02-12 14:30:24,286 - INFO - Found cell with approriate dating at cell_coordinates (4, 1) with value 2018-03-18 00:00:00
-2022-02-12 14:30:24,287 - INFO - Found 1 cells with approriate dating
-2022-02-12 14:30:24,289 - INFO - Starting to display data for day of 2018-03-18 00:00:00
-2022-02-12 14:30:24,290 - INFO - Calls Offered : 22343
-2022-02-12 14:30:24,292 - INFO -  Abandon after 30s : 3.05%
-2022-02-12 14:30:24,293 - INFO - FCR : 86.0%
-2022-02-12 14:30:24,294 - INFO - DSAT  : 18.0%
-2022-02-12 14:30:24,295 - INFO - CSAT  : 74.4%
-2022-02-12 14:30:24,320 - INFO - programing successfuly finished execution
+2022-02-12 15:53:44,469 - DEBUG   - Start of program mini_project
+2022-02-12 15:53:44,469 - DEBUG   - Check to see if file path exists
+2022-02-12 15:53:44,470 - INFO    - File mini_project\expedia_report_monthly_march_2018.xlsx successfully found
+2022-02-12 15:53:44,470 - INFO    - file name mini_project\expedia_report_monthly_march_2018.xlsx could be verified program continuing
+2022-02-12 15:53:44,470 - DEBUG   - Starting to parse file name mini_project\expedia_report_monthly_march_2018.xlsx
+2022-02-12 15:53:44,470 - INFO    - Successfuly parse file_name mini_project\expedia_report_monthly_march_2018.xlsx and is of supported type .xlsx
+2022-02-12 15:53:44,470 - DEBUG   - Starting search for month and year from parse of file name mini_project\expedia_report_monthly_march_2018.xlsx
+2022-02-12 15:53:44,472 - WARNING - Still searching for year and month from file name
+2022-02-12 15:53:44,472 - WARNING - Still searching for year and month from file name
+2022-02-12 15:53:44,472 - WARNING - Still searching for year and month from file name
+2022-02-12 15:53:44,472 - WARNING - Still searching for year and month from file name
+2022-02-12 15:53:44,472 - INFO    - Found month from file name 'march' converting to month number 3
+2022-02-12 15:53:44,472 - INFO    - Found year from file name 2018
+2022-02-12 15:53:44,472 - INFO    - Completed search for month and year from file name mini_project\expedia_report_monthly_march_2018.xlsx : file_name_month = 3, file_name_year = 2018
+2022-02-12 15:53:44,472 - DEBUG   - Starting to load excel worksheet
+2022-02-12 15:53:44,498 - INFO    - Successfully loaded excel worksheet
+2022-02-12 15:53:44,498 - DEBUG   - Starting search for all locations of rows with information about report on month 3 and year 2018
+2022-02-12 15:53:44,499 - INFO    - Found cell with approriate dating at cell_coordinates (4, 1) with value 2018-03-18 00:00:00
+2022-02-12 15:53:44,500 - INFO    - Found 1 cells with approriate dating
+2022-02-12 15:53:44,502 - INFO    - Starting to display data for day of 2018-03-18 00:00:00
+2022-02-12 15:53:44,503 - INFO    - Calls Offered : 22343
+2022-02-12 15:53:44,505 - INFO    -  Abandon after 30s : 3.05%
+2022-02-12 15:53:44,506 - INFO    - FCR : 86.0%
+2022-02-12 15:53:44,507 - INFO    - DSAT  : 18.0%
+2022-02-12 15:53:44,508 - INFO    - CSAT  : 74.4%
+2022-02-12 15:53:44,533 - INFO    - programing successfuly finished execution
