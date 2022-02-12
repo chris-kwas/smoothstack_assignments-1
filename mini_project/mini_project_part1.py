@@ -8,13 +8,11 @@ import os
 import datetime
 from datetime import date
 
+
 def parse_file_name(file):
     #things to do for error checking
     #make sure file is right type
     #make sure file is right name
-
-    # months_shorthand = {'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
-    #       'Aug', 'Sep', 'Oct', 'Nov', 'Dec'}
     replacements = ('_', '.')
     file = functools.reduce(lambda s, sep: s.replace(sep, ' '), replacements, file)# study this line more for latter
     return file.split()
@@ -53,18 +51,12 @@ def get_month_year_cell_positions(sheet_obj,file_month, file_year):
 
 
 def get_row_information(sheet_obj, row, column):
-    # for cell in sheet_obj[str(row)]:
-    #     print(sheet_obj[1][cell.column].value)
-    #     #print("{0} value = {1}".format(sheet_obj[1][cell.column].value,cell.value))#can use 1 since tod column name with be on top
-
     print("The day of {0}".format(sheet_obj[str(row)][column - 1].value))
     for x in range(1, len(sheet_obj[str(row)])):
         colummn_title = sheet_obj[1][x].value
         column_value = sheet_obj[str(row)][x].value
         if colummn_title != None and column_value != None:
             print("{0} value = {1}".format(colummn_title,column_value))#can use 1 since tod column name with be on top
-
-
 
 #--------------------------------------------------------------------------
 #IMPORTANT ASK ABOUT NEEDING TO LOOK AT THE OTHER WORK SHEETS IN THE PROJECT -- first sheet only
@@ -74,41 +66,19 @@ def get_row_information(sheet_obj, row, column):
 #needs to be able to show all instance that could apply not just one
 #log message ex picked up file and processed file
 if __name__ == '__main__':#get rid of this line latter
-    path = "mini_project\expedia_report_monthly_january_2018.xlsx"#make so program accepts only excel file
+    path = "mini_project\expedia_report_monthly_march_2018.xlsx"#make so program accepts only excel file
     file_name, extension = os.path.splitext(path)
     parse = parse_file_name(file_name)
     print(parse)
     file_name_month, file_name_year = get_month_year(parse)
     print("file_name_month = {}, file_name_year = {}".format(file_name_month, file_name_year))
 
-
-
-
     wb_obj = openpyxl.load_workbook(path, read_only=True)
     sheet_obj= wb_obj.active
     cell_positions = get_month_year_cell_positions(sheet_obj, file_name_month, file_name_year)#return list of (row,column)
     print(cell_positions)
-    get_row_information(sheet_obj, cell_positions[0][0], cell_positions[0][1])
-
-
-
-
-
-    # wb_obj = openpyxl.load_workbook(path, read_only=True)
-    # sheet_obj= wb_obj.active
-    # cell_obj = sheet_obj.cell(row = 4, column = 1)#remember excel starts counting at base 1
-    # print(cell_obj.value)
-
-
-
-
-
-
-
-# wb_obj = openpyxl.load_workbook(path)
-# sheet_obj = wb_obj.active
-# cell_obj = sheet_obj.cell(row = 9, column = 1)#remember excel starts counting at base 1
-# print(cell_obj.value)
-
+    
+    for match in cell_positions:# so am able to handle all instances that can fit the described time frame
+        get_row_information(sheet_obj, match[0], match[1])
 
 
