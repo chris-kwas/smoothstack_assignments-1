@@ -6,7 +6,7 @@ import datetime
 import logging
 
 
-logging.basicConfig(filename="mini_project\logs.log",filemode='w',level = logging.DEBUG, format = '%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename="mini_project\logs.log",filemode='w',level = logging.DEBUG, format = '%(asctime)s - %(levelname)-7s - %(message)s')
 
 
 def verify_file_name(path, extension):
@@ -42,10 +42,10 @@ def get_month_year(parsed):#list of strings as input
         try:
             month = datetime.datetime.strptime(text, "%B").month
             month_year[0] = month
-            logging.info("Found month from file name {0}".format(month_year[0]))
+            logging.info("Found month from file name '{0}' converting to month number {1} for later use".format(text, month_year[0]))
 
         except:
-            logging.warning("Still search for year and month from file name")
+            logging.warning("Still searching for year and month from file name")
 
     logging.critical("could not find month and year program ended")
     quit()
@@ -92,6 +92,7 @@ def get_row_information(sheet_obj, row, column):#assumes datetime can be in any 
 
 
 logging.debug("Start of program mini_project")
+
 path = "mini_project\expedia_report_monthly_march_2018.xlsx"#make so program accepts only excel file
 #path = "mini_project\expedia_report_test_file_monthly_january_2018.xlsx"
 logging.debug("Check to see if file path exists")
@@ -107,7 +108,7 @@ else:
 
 logging.debug("Starting to parse file name {0}".format(path))
 parse = parse_file_name(file_name)
-logging.info("Successfuly parse file_name {0} and is of supported type {1}".format(path, extension))
+logging.info("Successfuly parsed file_name {0} and is of supported type {1}".format(path, extension))
 
 logging.debug("Starting search for month and year from parse of file name {0}".format(path))
 file_name_month, file_name_year = get_month_year(parse)
