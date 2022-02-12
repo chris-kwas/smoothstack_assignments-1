@@ -5,7 +5,9 @@ from os import path as relative_path
 import datetime
 import logging
 
+
 logging.basicConfig(filename="mini_project\logs.log",filemode='w',level = logging.DEBUG, format = '%(asctime)s - %(levelname)s - %(message)s')
+
 
 def verify_file_name(path, extension):
     flag = True
@@ -30,7 +32,6 @@ def parse_file_name(file):
     
 
 def get_month_year(parsed):#list of strings as input
-    #make sure file is right name
     month_year = [None,None]
     for text in parsed:
         if text.isnumeric():
@@ -89,9 +90,7 @@ def get_row_information(sheet_obj, row, column):#assumes datetime can be in any 
 #--------------------------------------------------------------------------
 
 
-#log message ex picked up file and processed file
-#if __name__ == '__main__':#get rid of this line latter
-logging.debug("Start of program")
+logging.debug("Start of program mini_project")
 path = "mini_project\expedia_report_monthly_january_2018.xlsx"#make so program accepts only excel file
 logging.debug("Check to see if file path exists")
 
@@ -104,12 +103,10 @@ if verify_file_name(path, extension) == False:
 else:
     logging.info("file name {0} could be verified program continuing".format(path))
 
-
 logging.debug("Starting to parse file name {0}".format(path))
 parse = parse_file_name(file_name)
 logging.info("Successfuly parse file_name {0} and is of supported type {1}".format(path, extension))
 
-#print(parse)
 logging.debug("Starting search for month and year from parse of file name {0}".format(path))
 file_name_month, file_name_year = get_month_year(parse)
 logging.info("Completed search for month and year from file name {0} : file_name_month = {1}, file_name_year = {2}".format(path, file_name_month, file_name_year))
@@ -120,7 +117,6 @@ sheet_obj= wb_obj.active
 logging.info("Successfully loaded excel worksheet")
 
 cell_positions = get_month_year_cell_positions(sheet_obj, file_name_month, file_name_year)#return list of (row,column)
-#print(cell_positions)
 
 for match in cell_positions:# to be able to handle all instances that can fit the described time frame
     get_row_information(sheet_obj, match[0], match[1])
