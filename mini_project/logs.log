@@ -1,23 +1,23 @@
-2022-02-12 00:09:44,305 - DEBUG - Start of program
-2022-02-12 00:09:44,305 - DEBUG - Starting to parse file name mini_project\expedia_report_monthly_january_2018.xlsx
-2022-02-12 00:09:44,305 - INFO - Successfuly parse file_name mini_project\expedia_report_monthly_january_2018.xlsx and is of supported type .xlsx
-2022-02-12 00:09:44,305 - DEBUG - Starting search for month and year from parse of file name mini_project\expedia_report_monthly_january_2018.xlsx
-2022-02-12 00:09:44,307 - WARNING - Still search for year and month from file name
-2022-02-12 00:09:44,307 - WARNING - Still search for year and month from file name
-2022-02-12 00:09:44,307 - WARNING - Still search for year and month from file name
-2022-02-12 00:09:44,307 - WARNING - Still search for year and month from file name
-2022-02-12 00:09:44,307 - INFO - Found month from file name 1
-2022-02-12 00:09:44,307 - INFO - Found year from file name 2018
-2022-02-12 00:09:44,307 - INFO - Completed search for month and year from file name mini_project\expedia_report_monthly_january_2018.xlsx : file_name_month = 1, file_name_year = 2018
-2022-02-12 00:09:44,307 - DEBUG - Starting to load excel worksheet
-2022-02-12 00:09:44,339 - INFO - Successfully loaded excel worksheet
-2022-02-12 00:09:44,339 - DEBUG - Starting search for all locations of rows with information about report on month 1 and year 2018
-2022-02-12 00:09:44,341 - INFO - Found cell with approriate dating at cell_coordinates (12, 1) with value 2018-01-01 00:00:00
-2022-02-12 00:09:44,342 - INFO - Found 1 cells with approriate dating
-2022-02-12 00:09:44,345 - INFO - Starting to display data for day of 2018-01-01 00:00:00
-2022-02-12 00:09:44,348 - INFO - Calls Offered : 16915
-2022-02-12 00:09:44,350 - INFO -  Abandon after 30s : 2.32%
-2022-02-12 00:09:44,352 - INFO - FCR : 86.5%
-2022-02-12 00:09:44,354 - INFO - DSAT  : 14.2%
-2022-02-12 00:09:44,356 - INFO - CSAT  : 78.3%
-2022-02-12 00:09:44,398 - INFO - programing successfuly finished execution
+2022-02-12 00:12:12,900 - DEBUG - Start of program
+2022-02-12 00:12:12,900 - DEBUG - Starting to parse file name mini_project\expedia_report_monthly_january_2018.xlsx
+2022-02-12 00:12:12,900 - INFO - Successfuly parse file_name mini_project\expedia_report_monthly_january_2018.xlsx and is of supported type .xlsx
+2022-02-12 00:12:12,900 - DEBUG - Starting search for month and year from parse of file name mini_project\expedia_report_monthly_january_2018.xlsx
+2022-02-12 00:12:12,903 - WARNING - Still search for year and month from file name
+2022-02-12 00:12:12,903 - WARNING - Still search for year and month from file name
+2022-02-12 00:12:12,903 - WARNING - Still search for year and month from file name
+2022-02-12 00:12:12,903 - WARNING - Still search for year and month from file name
+2022-02-12 00:12:12,903 - INFO - Found month from file name 1
+2022-02-12 00:12:12,903 - INFO - Found year from file name 2018
+2022-02-12 00:12:12,903 - INFO - Completed search for month and year from file name mini_project\expedia_report_monthly_january_2018.xlsx : file_name_month = 1, file_name_year = 2018
+2022-02-12 00:12:12,903 - DEBUG - Starting to load excel worksheet
+2022-02-12 00:12:12,935 - INFO - Successfully loaded excel worksheet
+2022-02-12 00:12:12,935 - DEBUG - Starting search for all locations of rows with information about report on month 1 and year 2018
+2022-02-12 00:12:12,937 - INFO - Found cell with approriate dating at cell_coordinates (12, 1) with value 2018-01-01 00:00:00
+2022-02-12 00:12:12,937 - INFO - Found 1 cells with approriate dating
+2022-02-12 00:12:12,941 - INFO - Starting to display data for day of 2018-01-01 00:00:00
+2022-02-12 00:12:12,943 - INFO - Calls Offered : 16915
+2022-02-12 00:12:12,945 - INFO -  Abandon after 30s : 2.32%
+2022-02-12 00:12:12,947 - INFO - FCR : 86.5%
+2022-02-12 00:12:12,950 - INFO - DSAT  : 14.2%
+2022-02-12 00:12:12,952 - INFO - CSAT  : 78.3%
+2022-02-12 00:12:12,993 - INFO - programing successfuly finished execution
