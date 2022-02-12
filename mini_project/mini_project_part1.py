@@ -1,20 +1,14 @@
-from calendar import month
-from distutils.log import error
-from operator import contains
-from posixpath import split
-from openpyxl import Workbook
 import openpyxl
 import functools
 import os
 import datetime
-from datetime import date
 import logging
 
 logging.basicConfig(filename="mini_project\logs.log",filemode='w',level = logging.DEBUG, format = '%(asctime)s - %(levelname)s - %(message)s')
 
 def parse_file_name(file):
     replacements = ('_', '.')
-    file = functools.reduce(lambda s, sep: s.replace(sep, ' '), replacements, file)# study this line more for latter
+    file = functools.reduce(lambda s, sep: s.replace(sep, ' '), replacements, file)#study this line more for latter
     return file.split()
     
 
@@ -38,21 +32,6 @@ def get_month_year(parsed):#list of strings as input
     logging.critical("could not find month and year program terminated")
     quit()
 
-#funtion assumes the datetiems are in the first column
-# def get_month_year_cell_positions(sheet_obj,file_month, file_year):
-#     matching_datetime_cells = list()
-#     for row in sheet_obj.rows:
-#         cell = row[0].value
-#         if type(cell) == datetime.datetime:
-#             if cell.month == file_month and cell.year == file_year:
-#                 print(cell.month,cell.year, "got the cell row = {0} and the column {1}".format(row[0].row, row[0].column))
-#                 cell_coordinates = (row[0].row, row[0].column)
-#                 matching_datetime_cells.append(cell_coordinates)
-#     if len(matching_datetime_cells) == 0:
-#          error("Could not find")
-#          quit()
-#     return matching_datetime_cells
-
 #function does a smart scan
 def get_month_year_cell_positions(sheet_obj,file_month, file_year):
     matching_datetime_cells = list()#list of cell coordionates that met description
@@ -72,17 +51,7 @@ def get_month_year_cell_positions(sheet_obj,file_month, file_year):
     return matching_datetime_cells
 
 
-# def get_row_information(sheet_obj, row, column):#assumes datetime is first column
-#     #print("The day of {0}".format(sheet_obj[str(row)][column - 1].value))
-#     for x in range(1, len(sheet_obj[str(row)])):
-#         colummn_title = sheet_obj[1][x].value
-#         column_value = sheet_obj[str(row)][x].value
-#         if colummn_title != None and column_value != None:
-#             print("{0} value = {1}".format(colummn_title,column_value))#can use 1 since the column name with be on top
-
 def get_row_information(sheet_obj, row, column):#assumes datetime can be in any column
-    #row_info = sheet_obj[row]
-
     for x in range(column - 1, len(sheet_obj[row])):#-1 is to compensate for the none in the column 1,1 gets the datetime back
         cell_value = sheet_obj.cell(row, column + x).value
         cell_column_name = sheet_obj.cell(1, column + x).value#can use 1 since the column name with be on top
@@ -103,7 +72,7 @@ def get_row_information(sheet_obj, row, column):#assumes datetime can be in any 
 #IMPORTANT ASK ABOUT if the month and be in any row or guarnteed to be the first one #information about the month is GUARANTEED to be towards the right of the month cell 
                                                                                       # but month cell not guarnteed to be first column need to do a smart search
 #--------------------------------------------------------------------------
-#needs to be able to show all instance that could apply not just one
+
 #log message ex picked up file and processed file
 if __name__ == '__main__':#get rid of this line latter
     logging.debug("Start of program")
