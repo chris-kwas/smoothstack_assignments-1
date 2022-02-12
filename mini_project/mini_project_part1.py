@@ -84,17 +84,14 @@ def get_row_information(sheet_obj, row, column):#assumes datetime can be in any 
                 logging.info("{0} : {1}%".format(cell_column_name, cell_value * 100))
 
 
-#--------------------------------------------------------------------------
-#IMPORTANT ASK ABOUT NEEDING TO LOOK AT THE OTHER WORK SHEETS IN THE PROJECT -- first sheet only
-#IMPORTANT ASK ABOUT if the month and be in any row or guarnteed to be the first one #information about the month is GUARANTEED to be towards the right of the month cell 
-                                                                                      # but month cell not guarnteed to be first column need to do a smart search
-#--------------------------------------------------------------------------
-
-
 logging.debug("Start of program mini_project")
+path = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_january_2018.xlsx" #from another directory
+#path = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_march_2018.xlsx" #from another directory
+#path = "C:\\Users\\mskwa_000\\Documents\\expedia_report_test_file_monthly_january_2018.xlsx" #from another directory
+#path = "mini_project\expedia_report_monthly_march_2018.xlsx"#make so program accepts only excel file #from same directory
+#path = "mini_project\expedia_report_monthly_january_2018.xlsx" #from same directory
+#path = "mini_project\expedia_report_test_file_monthly_january_2018.xlsx" #from same directory
 
-path = "mini_project\expedia_report_monthly_march_2018.xlsx"#make so program accepts only excel file
-#path = "mini_project\expedia_report_test_file_monthly_january_2018.xlsx"
 logging.debug("Check to see if file path exists")
 
 #important to do add for is_proper_path (basically the ifs and else into a function)
@@ -124,5 +121,3 @@ cell_positions = get_month_year_cell_positions(sheet_obj, file_name_month, file_
 for match in cell_positions:# to be able to handle all instances that can fit the described time frame
     get_row_information(sheet_obj, match[0], match[1])
 logging.info("programing successfuly finished execution")
-
-
