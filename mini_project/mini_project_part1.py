@@ -70,8 +70,10 @@ def get_month_year_cell_positions(sheet_obj, file_month, file_year):
 
 
 def get_row_information(sheet_obj, row, column):#assumes datetime can be in any column
-    for x in range(column - 1, len(sheet_obj[row])):#-1 is to compensate for the none in the column 1,1 gets the datetime back
+    row_length =len(sheet_obj[row])
+    for x in range(0, row_length - column + 1):
         cell_value = sheet_obj.cell(row, column + x).value
+        print(row,column,x,row_length)
         cell_column_name = sheet_obj.cell(1, column + x).value#can use 1 since the column name with be on top
         if type(cell_value) == datetime.datetime:
             logging.info("Starting to display data for day of {0}".format(cell_value))
@@ -91,7 +93,8 @@ def get_row_information(sheet_obj, row, column):#assumes datetime can be in any 
 
 
 logging.debug("Start of program mini_project")
-path = "mini_project\expedia_report_monthly_january_2018.xlsx"#make so program accepts only excel file
+path = "mini_project\expedia_report_monthly_march_2018.xlsx"#make so program accepts only excel file
+#path = "mini_project\expedia_report_test_file_monthly_january_2018.xlsx"
 logging.debug("Check to see if file path exists")
 
 #important to do add for is_proper_path (basically the ifs and else into a function)
