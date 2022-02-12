@@ -1,6 +1,7 @@
 import openpyxl
 import functools
 import os
+from os import path as relative_path
 import datetime
 import logging
 
@@ -73,32 +74,40 @@ def get_row_information(sheet_obj, row, column):#assumes datetime can be in any 
 
 
 #log message ex picked up file and processed file
-if __name__ == '__main__':#get rid of this line latter
-    logging.debug("Start of program")
-    path = "mini_project\expedia_report_monthly_january_2018.xlsx"#make so program accepts only excel file
-    file_name, extension = os.path.splitext(path)
-    if extension != ".xlsx":
-        logging.critical("File type {0} is not supported".format(extension))
-        quit()
-    logging.debug("Starting to parse file name {0}".format(path))
-    parse = parse_file_name(file_name)
-    logging.info("Successfuly parse file_name {0} and is of supported type {1}".format(path, extension))
+#if __name__ == '__main__':#get rid of this line latter
+logging.debug("Start of program")
+path = "mini_project\expedia_report_monthly_march_2018.xlsx"#make so program accepts only excel file
+logging.debug("Check to see if file path exists")
 
-    #print(parse)
-    logging.debug("Starting search for month and year from parse of file name {0}".format(path))
-    file_name_month, file_name_year = get_month_year(parse)
-    logging.info("Completed search for month and year from file name {0} : file_name_month = {1}, file_name_year = {2}".format(path, file_name_month, file_name_year))
+file_name, extension = os.path.splitext(path)
+if extension != ".xlsx":
+    logging.critical("File type {0} is not supported".format(extension))
+    quit()
+if relative_path.exists(path) == False:
+    logging.critical("File {0} not found program terminated".format(path))
+    quit()
+else:
+    logging.info("File {0} successfully found".format(path))
 
-    logging.debug("Starting to load excel worksheet")
-    wb_obj = openpyxl.load_workbook(path, read_only=True)
-    sheet_obj= wb_obj.active
-    logging.info("Successfully loaded excel worksheet")
-    
-    cell_positions = get_month_year_cell_positions(sheet_obj, file_name_month, file_name_year)#return list of (row,column)
-    #print(cell_positions)
-    
-    for match in cell_positions:# so am able to handle all instances that can fit the described time frame
-        get_row_information(sheet_obj, match[0], match[1])#to do : convert numbers to how they appear in the sheet
-    logging.info("programing successfuly finished execution")
+logging.debug("Starting to parse file name {0}".format(path))
+parse = parse_file_name(file_name)
+logging.info("Successfuly parse file_name {0} and is of supported type {1}".format(path, extension))
+
+#print(parse)
+logging.debug("Starting search for month and year from parse of file name {0}".format(path))
+file_name_month, file_name_year = get_month_year(parse)
+logging.info("Completed search for month and year from file name {0} : file_name_month = {1}, file_name_year = {2}".format(path, file_name_month, file_name_year))
+
+logging.debug("Starting to load excel worksheet")
+wb_obj = openpyxl.load_workbook(path, read_only=True)
+sheet_obj= wb_obj.active
+logging.info("Successfully loaded excel worksheet")
+
+cell_positions = get_month_year_cell_positions(sheet_obj, file_name_month, file_name_year)#return list of (row,column)
+#print(cell_positions)
+
+for match in cell_positions:# so am able to handle all instances that can fit the described time frame
+    get_row_information(sheet_obj, match[0], match[1])#to do : convert numbers to how they appear in the sheet
+logging.info("programing successfuly finished execution")
 
 
