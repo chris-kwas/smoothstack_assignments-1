@@ -65,13 +65,12 @@ def get_row_information(sheet_obj, row, column):#assumes datetime can be in any 
                 logging.info("{0} : {1}%".format(cell_column_name, cell_value * 100))
 
 
-
-
 #--------------------------------------------------------------------------
 #IMPORTANT ASK ABOUT NEEDING TO LOOK AT THE OTHER WORK SHEETS IN THE PROJECT -- first sheet only
 #IMPORTANT ASK ABOUT if the month and be in any row or guarnteed to be the first one #information about the month is GUARANTEED to be towards the right of the month cell 
                                                                                       # but month cell not guarnteed to be first column need to do a smart search
 #--------------------------------------------------------------------------
+
 
 #log message ex picked up file and processed file
 if __name__ == '__main__':#get rid of this line latter
