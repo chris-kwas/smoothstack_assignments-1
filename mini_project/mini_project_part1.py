@@ -1,3 +1,4 @@
+from calendar import month
 from distutils.log import error
 from operator import contains
 from posixpath import split
@@ -9,34 +10,32 @@ import datetime
 from datetime import date
 import logging
 
-logging.basicConfig(filename="mini_project\logs.log",filemode='w',level = logging.DEBUG, format = '%(asctime)s - %(levelname)s - %(messages)')
-
-
-logging.critical('This is a Critical message')
+logging.basicConfig(filename="mini_project\logs.log",filemode='w',level = logging.DEBUG, format = '%(asctime)s - %(levelname)s - %(message)s')
 
 def parse_file_name(file):
-    #things to do for error checking
-    #make sure file is right type
-    #make sure file is right name
     replacements = ('_', '.')
     file = functools.reduce(lambda s, sep: s.replace(sep, ' '), replacements, file)# study this line more for latter
     return file.split()
     
 
 def get_month_year(parsed):#list of strings as input
+    #make sure file is right name
     month_year = [None,None]
     for text in parsed:
         if text.isnumeric():
             month_year[1] = int(text) # gets year
+            logging.info("Found year from file name {0}".format(month_year[1]))
             if type(month_year[0]) == int:
                 return month_year[0], month_year[1] #can return because year is given after month in the formating described
         try:
             month = datetime.datetime.strptime(text, "%B").month
             month_year[0] = month
+            logging.info("Found month from file name {0}".format(month_year[0]))
+
         except:
-            #print(text, "not a month")
-            pass
-    error("could not find month and year program terminated")
+            logging.warning("Still search for year and month from file name")
+
+    logging.critical("could not find month and year program terminated")
     quit()
 
 #funtion assumes the datetiems are in the first column
@@ -57,17 +56,19 @@ def get_month_year(parsed):#list of strings as input
 #function does a smart scan
 def get_month_year_cell_positions(sheet_obj,file_month, file_year):
     matching_datetime_cells = list()#list of cell coordionates that met description
+    logging.debug("Starting search for all locations of rows with information about report on month {0} and year {1}".format(file_month, file_year))
     for row in sheet_obj:
         for column in row:
             if type(column.value) == datetime.datetime:
                 if column.value.month == file_month and column.value.year == file_year:#gets the exact datetime here
                     cell_coordinates = (column.row, column.column)
+                    logging.info("Found cell with approriate dating at cell_coordinates {0} with value {1}".format(cell_coordinates, column.value))
                     matching_datetime_cells.append(cell_coordinates)
-
-    if len(matching_datetime_cells) == 0:
-         error("Could not find any suitable dates")
+    amt_of_matches = len(matching_datetime_cells)
+    if amt_of_matches == 0:
+         logging.critical("Could not find any suitable dates")
          quit()
-
+    logging.info("Found {0} cells with approriate dating".format(amt_of_matches))
     return matching_datetime_cells
 
 
@@ -82,11 +83,18 @@ def get_month_year_cell_positions(sheet_obj,file_month, file_year):
 def get_row_information(sheet_obj, row, column):#assumes datetime can be in any column
     #row_info = sheet_obj[row]
 
-    for x in range(column, len(sheet_obj[row])):#-1 is to compensate for the none in the column 1,1 gets the datetime back
+    for x in range(column - 1, len(sheet_obj[row])):#-1 is to compensate for the none in the column 1,1 gets the datetime back
         cell_value = sheet_obj.cell(row, column + x).value
         cell_column_name = sheet_obj.cell(1, column + x).value#can use 1 since the column name with be on top
-        if (cell_value == None and cell_column_name == None) == False:
-            print("{} : {}".format(cell_column_name, cell_value))
+        if type(cell_value) == datetime.datetime:
+            logging.info("Starting to display data for day of {0}".format(cell_value))
+        elif(cell_value == None and cell_column_name == None) == False:
+            #print("{0} : {1}".format(cell_column_name, cell_value))
+            if type(cell_value) != float:
+                logging.info("{0} : {1}".format(cell_column_name, cell_value))
+            else:
+                logging.info("{0} : {1}%".format(cell_column_name, cell_value * 100))
+
 
 
 
@@ -98,22 +106,31 @@ def get_row_information(sheet_obj, row, column):#assumes datetime can be in any 
 #needs to be able to show all instance that could apply not just one
 #log message ex picked up file and processed file
 if __name__ == '__main__':#get rid of this line latter
-    path = "mini_project\expedia_report_monthly_january_2018.xls1x"#make so program accepts only excel file
+    logging.debug("Start of program")
+    path = "mini_project\expedia_report_monthly_january_2018.xlsx"#make so program accepts only excel file
     file_name, extension = os.path.splitext(path)
     if extension != ".xlsx":
-        logging.critical("File type {} is not supported".format(extension))
+        logging.critical("File type {0} is not supported".format(extension))
         quit()
+    logging.debug("Starting to parse file name {0}".format(path))
     parse = parse_file_name(file_name)
-    print(parse)
-    file_name_month, file_name_year = get_month_year(parse)
-    #print("file_name_month = {}, file_name_year = {}".format(file_name_month, file_name_year))
+    logging.info("Successfuly parse file_name {0} and is of supported type {1}".format(path, extension))
 
+    #print(parse)
+    logging.debug("Starting search for month and year from parse of file name {0}".format(path))
+    file_name_month, file_name_year = get_month_year(parse)
+    logging.info("Completed search for month and year from file name {0} : file_name_month = {1}, file_name_year = {2}".format(path, file_name_month, file_name_year))
+
+    logging.debug("Starting to load excel worksheet")
     wb_obj = openpyxl.load_workbook(path, read_only=True)
     sheet_obj= wb_obj.active
+    logging.info("Successfully loaded excel worksheet")
+    
     cell_positions = get_month_year_cell_positions(sheet_obj, file_name_month, file_name_year)#return list of (row,column)
     #print(cell_positions)
     
     for match in cell_positions:# so am able to handle all instances that can fit the described time frame
-        get_row_information(sheet_obj, match[0], match[1])#to do convert numbers to how they appear in the sheet
+        get_row_information(sheet_obj, match[0], match[1])#to do : convert numbers to how they appear in the sheet
+    logging.info("programing successfuly finished execution")
 
 
