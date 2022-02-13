@@ -71,11 +71,16 @@ def get_month_year_cell_positions(sheet_obj, file_month, file_year):
 
 def get_row_information(sheet_obj, row, column):#assumes datetime can be in any column
     row_length =len(sheet_obj[row])
+    x = False
     for x in range(0, row_length - column + 1):
         cell_value = sheet_obj.cell(row, column + x).value
         cell_column_name = sheet_obj.cell(1, column + x).value#can use 1 since the column name with be on top
         if type(cell_value) == datetime.datetime:
-            logging.info("Starting to display data for day of {0}".format(cell_value))
+            if x == False:
+                logging.info("Starting to display data for day of {0}".format(cell_value))
+                x = True
+            else:
+                return
         elif(cell_value == None or cell_column_name == None) == False:
             #print("{0} : {1}".format(cell_column_name, cell_value))
             if type(cell_value) != float:
