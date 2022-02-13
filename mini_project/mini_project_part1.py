@@ -76,18 +76,19 @@ def get_row_information(sheet_obj, row, column):#assumes datetime can be in any 
         cell_column_name = sheet_obj.cell(1, column + x).value#can use 1 since the column name with be on top
         if type(cell_value) == datetime.datetime:
             logging.info("Starting to display data for day of {0}".format(cell_value))
-        elif(cell_value == None and cell_column_name == None) == False:
+        elif(cell_value == None or cell_column_name == None) == False:
             #print("{0} : {1}".format(cell_column_name, cell_value))
             if type(cell_value) != float:
-                logging.info("{0} : {1}".format(cell_column_name, cell_value))
+                #logging.info("{0} : {1}".format(cell_column_name, cell_value))
+                logging.info("{0} : {1} : row = {2} : column = {3}".format(cell_column_name, cell_value, row, column + x))
             else:
-                logging.info("{0} : {1}%".format(cell_column_name, cell_value * 100))
+                logging.info("{0} : {1}%  : row = {2} : column = {3}".format(cell_column_name, cell_value * 100, row, column + x))
 
 
 logging.debug("Start of program mini_project")
-path = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_january_2018.xlsx" #from another directory
+#path = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_january_2018.xlsx" #from another directory
 #path = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_march_2018.xlsx" #from another directory
-#path = "C:\\Users\\mskwa_000\\Documents\\expedia_report_test_file_monthly_january_2018.xlsx" #from another directory
+path = "C:\\Users\\mskwa_000\\Documents\\expedia_report_test_file_monthly_january_2018.xlsx" #from another directory
 #path = "mini_project\expedia_report_monthly_march_2018.xlsx"#make so program accepts only excel file #from same directory
 #path = "mini_project\expedia_report_monthly_january_2018.xlsx" #from same directory
 #path = "mini_project\expedia_report_test_file_monthly_january_2018.xlsx" #from same directory
