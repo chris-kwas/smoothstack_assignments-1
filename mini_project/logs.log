@@ -1,29 +1,49 @@
-2022-02-12 18:47:10,587 - DEBUG   - Start of program mini_project
-2022-02-12 18:47:10,587 - DEBUG   - Check to see if file path exists
-2022-02-12 18:47:10,588 - INFO    - File C:\Users\mskwa_000\Downloads\problem_statement_cloud_foundations\expedia_report_monthly_january_2018.xlsx successfully found
-2022-02-12 18:47:10,588 - INFO    - file name C:\Users\mskwa_000\Downloads\problem_statement_cloud_foundations\expedia_report_monthly_january_2018.xlsx could be verified program continuing
-2022-02-12 18:47:10,588 - DEBUG   - Starting to parse file name C:\Users\mskwa_000\Downloads\problem_statement_cloud_foundations\expedia_report_monthly_january_2018.xlsx
-2022-02-12 18:47:10,588 - INFO    - Successfuly parsed file_name C:\Users\mskwa_000\Downloads\problem_statement_cloud_foundations\expedia_report_monthly_january_2018.xlsx and is of supported type .xlsx
-2022-02-12 18:47:10,588 - DEBUG   - Starting search for month and year from parse of file name C:\Users\mskwa_000\Downloads\problem_statement_cloud_foundations\expedia_report_monthly_january_2018.xlsx
-2022-02-12 18:47:10,591 - WARNING - Still searching for year and month from file name
-2022-02-12 18:47:10,591 - WARNING - Still searching for year and month from file name
-2022-02-12 18:47:10,591 - WARNING - Still searching for year and month from file name
-2022-02-12 18:47:10,591 - WARNING - Still searching for year and month from file name
-2022-02-12 18:47:10,591 - WARNING - Still searching for year and month from file name
-2022-02-12 18:47:10,591 - WARNING - Still searching for year and month from file name
-2022-02-12 18:47:10,591 - WARNING - Still searching for year and month from file name
-2022-02-12 18:47:10,591 - INFO    - Found month from file name 'january' converting to month number 1 for later use
-2022-02-12 18:47:10,591 - INFO    - Found year from file name 2018
-2022-02-12 18:47:10,591 - INFO    - Completed search for month and year from file name C:\Users\mskwa_000\Downloads\problem_statement_cloud_foundations\expedia_report_monthly_january_2018.xlsx : file_name_month = 1, file_name_year = 2018
-2022-02-12 18:47:10,591 - DEBUG   - Starting to load excel worksheet
-2022-02-12 18:47:10,625 - INFO    - Successfully loaded excel worksheet
-2022-02-12 18:47:10,625 - DEBUG   - Starting search for all locations of rows with information about report on month 1 and year 2018
-2022-02-12 18:47:10,627 - INFO    - Found cell with approriate dating at cell_coordinates (12, 1) with value 2018-01-01 00:00:00
-2022-02-12 18:47:10,628 - INFO    - Found 1 cells with approriate dating
-2022-02-12 18:47:10,631 - INFO    - Starting to display data for day of 2018-01-01 00:00:00
-2022-02-12 18:47:10,634 - INFO    - Calls Offered : 16915
-2022-02-12 18:47:10,636 - INFO    -  Abandon after 30s : 2.32%
-2022-02-12 18:47:10,638 - INFO    - FCR : 86.5%
-2022-02-12 18:47:10,641 - INFO    - DSAT  : 14.2%
-2022-02-12 18:47:10,644 - INFO    - CSAT  : 78.3%
-2022-02-12 18:47:10,688 - INFO    - programing successfuly finished execution
+2022-02-13 14:44:38,950 - DEBUG   - Start of program mini_project
+2022-02-13 14:44:38,950 - DEBUG   - Check to see if file path exists
+2022-02-13 14:44:38,950 - INFO    - File C:\Users\mskwa_000\Documents\expedia_report_test_file_monthly_january_2018.xlsx successfully found
+2022-02-13 14:44:38,950 - INFO    - file name C:\Users\mskwa_000\Documents\expedia_report_test_file_monthly_january_2018.xlsx could be verified program continuing
+2022-02-13 14:44:38,950 - DEBUG   - Starting to parse file name C:\Users\mskwa_000\Documents\expedia_report_test_file_monthly_january_2018.xlsx
+2022-02-13 14:44:38,950 - INFO    - Successfuly parsed file_name C:\Users\mskwa_000\Documents\expedia_report_test_file_monthly_january_2018.xlsx and is of supported type .xlsx
+2022-02-13 14:44:38,950 - DEBUG   - Starting search for month and year from parse of file name C:\Users\mskwa_000\Documents\expedia_report_test_file_monthly_january_2018.xlsx
+2022-02-13 14:44:38,953 - WARNING - Still searching for year and month from file name
+2022-02-13 14:44:38,953 - WARNING - Still searching for year and month from file name
+2022-02-13 14:44:38,953 - WARNING - Still searching for year and month from file name
+2022-02-13 14:44:38,953 - WARNING - Still searching for year and month from file name
+2022-02-13 14:44:38,953 - WARNING - Still searching for year and month from file name
+2022-02-13 14:44:38,953 - WARNING - Still searching for year and month from file name
+2022-02-13 14:44:38,953 - INFO    - Found month from file name 'january' converting to month number 1 for later use
+2022-02-13 14:44:38,953 - INFO    - Found year from file name 2018
+2022-02-13 14:44:38,953 - INFO    - Completed search for month and year from file name C:\Users\mskwa_000\Documents\expedia_report_test_file_monthly_january_2018.xlsx : file_name_month = 1, file_name_year = 2018
+2022-02-13 14:44:38,953 - DEBUG   - Starting to load excel worksheet
+2022-02-13 14:44:38,965 - INFO    - Successfully loaded excel worksheet
+2022-02-13 14:44:38,965 - DEBUG   - Starting search for all locations of rows with information about report on month 1 and year 2018
+2022-02-13 14:44:38,966 - INFO    - Found cell with approriate dating at cell_coordinates (16, 13) with value 2018-01-17 00:00:00
+2022-02-13 14:44:38,966 - INFO    - Found cell with approriate dating at cell_coordinates (23, 13) with value 2018-01-01 00:00:00
+2022-02-13 14:44:38,966 - INFO    - Found cell with approriate dating at cell_coordinates (35, 24) with value 2018-01-17 00:00:00
+2022-02-13 14:44:38,966 - INFO    - Found cell with approriate dating at cell_coordinates (42, 24) with value 2018-01-01 00:00:00
+2022-02-13 14:44:38,967 - INFO    - Found 4 cells with approriate dating
+2022-02-13 14:44:38,969 - INFO    - Starting to display data for day of 2018-01-17 00:00:00
+2022-02-13 14:44:38,971 - INFO    - Calls Offered : 26666 : row = 16 : column = 14
+2022-02-13 14:44:38,972 - INFO    -  Abandon after 30s : 2.56%  : row = 16 : column = 15
+2022-02-13 14:44:38,973 - INFO    - FCR : 83.1%  : row = 16 : column = 16
+2022-02-13 14:44:38,975 - INFO    - DSAT  : 14.799999999999999%  : row = 16 : column = 17
+2022-02-13 14:44:38,976 - INFO    - CSAT  : 73.6%  : row = 16 : column = 18
+2022-02-13 14:44:38,992 - INFO    - Starting to display data for day of 2018-01-01 00:00:00
+2022-02-13 14:44:38,994 - INFO    - Calls Offered : 21344 : row = 23 : column = 14
+2022-02-13 14:44:39,001 - INFO    -  Abandon after 30s : 2.32%  : row = 23 : column = 15
+2022-02-13 14:44:39,002 - INFO    - FCR : 86.5%  : row = 23 : column = 16
+2022-02-13 14:44:39,004 - INFO    - DSAT  : 14.2%  : row = 23 : column = 17
+2022-02-13 14:44:39,005 - INFO    - CSAT  : 78.3%  : row = 23 : column = 18
+2022-02-13 14:44:39,022 - INFO    - Starting to display data for day of 2018-01-17 00:00:00
+2022-02-13 14:44:39,024 - INFO    - Calls Offered : 31666 : row = 35 : column = 25
+2022-02-13 14:44:39,025 - INFO    -  Abandon after 30s : 2.56%  : row = 35 : column = 26
+2022-02-13 14:44:39,026 - INFO    - FCR : 83.1%  : row = 35 : column = 27
+2022-02-13 14:44:39,028 - INFO    - DSAT  : 14.799999999999999%  : row = 35 : column = 28
+2022-02-13 14:44:39,029 - INFO    - CSAT  : 73.6%  : row = 35 : column = 29
+2022-02-13 14:44:39,032 - INFO    - Starting to display data for day of 2018-01-01 00:00:00
+2022-02-13 14:44:39,034 - INFO    - Calls Offered : 45 : row = 42 : column = 25
+2022-02-13 14:44:39,035 - INFO    -  Abandon after 30s : 2.32%  : row = 42 : column = 26
+2022-02-13 14:44:39,037 - INFO    - FCR : 86.5%  : row = 42 : column = 27
+2022-02-13 14:44:39,039 - INFO    - DSAT  : 14.2%  : row = 42 : column = 28
+2022-02-13 14:44:39,040 - INFO    - CSAT  : 78.3%  : row = 42 : column = 29
+2022-02-13 14:44:39,040 - INFO    - programing successfuly finished execution
