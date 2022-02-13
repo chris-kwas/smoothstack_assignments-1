@@ -26,7 +26,7 @@ def verify_file_name(path, extension):
 
 
 def parse_file_name(file):
-    replacements = ('_', '.')
+    replacements = ('_')
     file = functools.reduce(lambda s, sep: s.replace(sep, ' '), replacements, file)#study this line more for latter
     return file.split()
     
