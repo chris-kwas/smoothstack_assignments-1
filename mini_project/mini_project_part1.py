@@ -6,7 +6,7 @@ import datetime
 import logging
 import bisect
 
-logging.basicConfig(filename="mini_project\logs.log",filemode='w',level = logging.DEBUG, format = '%(asctime)s - %(levelname)-7s - %(message)s')
+logging.basicConfig(filename="mini_project\logs.log", filemode='w',level = logging.DEBUG, format = '%(asctime)s:[%(levelname)-8s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 
 def verify_file_name(path, extension):
