@@ -4,7 +4,6 @@ import os
 from os import path as relative_path
 import datetime
 import logging
-import bisect
 
 logging.basicConfig(filename="mini_project\logs.log", filemode='w',level = logging.DEBUG, format = '%(asctime)s:[%(levelname)-8s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
@@ -116,6 +115,7 @@ def print_row_in_priority_order(row):
         else:
             logging.info("{} : {}".format(cell[1], cell[0])) #for non percentages
     
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 logging.debug("Start of program mini_project")
 path = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_january_2018.xlsx" #from another directory
