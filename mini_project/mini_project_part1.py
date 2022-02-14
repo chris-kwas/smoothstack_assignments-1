@@ -50,6 +50,7 @@ def get_month_year(parsed):#list of strings as input
     logging.critical("could not find month and year program ended")
     quit()
 
+
 #function does a smart scan
 def get_month_year_cell_positions(sheet_obj, file_month, file_year):
     matching_datetime_cells = list()#list of cell coordionates that met description
@@ -94,28 +95,6 @@ def get_row_information(sheet_obj, row, column):#assumes datetime can be in any 
     return row_info
 
 
-# def print_row_in_priority_order(row):
-#     displaypriority = {
-#     "Calls Offered" : 0,
-#     "Abandon after 30s" : 1,
-#     "FCR" : 2,
-#     "DSAT" : 3,
-#     "CSAT" : 4
-#     }
-#     new_lst = [None] * (len(row) - 1)
-#     logging.info(row[0][0])
-#     row.remove(row[0])
-#     for cell in row:
-#         cell[1] = cell[1].strip() #sanitize display for output and for dictionary lookup
-#         new_lst[displaypriority[cell[1]]] = cell[1], cell[0]#cell[1] = title cell[0] = value
-#     for element in new_lst:
-#         if type(element[1]) == float:
-#             logging.info("{} : {}%".format(element[0], element[1])) #for display percetages
-#         else:
-#             logging.info("{} : {}".format(element[0], element[1])) #for non percentages
-#--------------------- ----------------------------------------
-
-
 def print_row_in_priority_order(row):
     displaypriority = {
     "Calls Offered" : 0,
@@ -125,7 +104,8 @@ def print_row_in_priority_order(row):
     "CSAT" : 4
     }
     #logging.info(row[0][0].month)#display timestamp being worked on
-    logging.info(row[0][0].strftime("Values being displayed for %d - {0} - %Y".format(row[0][0].month)))
+    #logging.info(row[0][0].strftime("Values being displayed for %B"))
+    logging.info(row[0][0].strftime("Values being displayed for %d - %m - %Y"))
     row.remove(row[0])
 
     sorted(row, key=lambda x: displaypriority[x[1].strip()], reverse=False)#sort information based on a dictionary lookup key and  example given
@@ -138,9 +118,9 @@ def print_row_in_priority_order(row):
     
 
 logging.debug("Start of program mini_project")
-#path = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_january_2018.xlsx" #from another directory
+path = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_january_2018.xlsx" #from another directory
 #path = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_march_2018.xlsx" #from another directory
-path = "C:\\Users\\mskwa_000\\Documents\\expedia_report_test_file_monthly_january_2018.xlsx" #from another directory
+#path = "C:\\Users\\mskwa_000\\Documents\\expedia_report_test_file_monthly_january_2018.xlsx" #from another directory
 #path = "mini_project\expedia_report_monthly_march_2018.xlsx"#make so program accepts only excel file #from same directory
 #path = "mini_project\expedia_report_monthly_january_2018.xlsx" #from same directory
 #path = "mini_project\expedia_report_test_file_monthly_january_2018.xlsx" #from same directory
