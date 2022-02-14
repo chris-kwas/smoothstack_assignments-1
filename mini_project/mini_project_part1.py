@@ -4,9 +4,19 @@ import os
 from os import path as relative_path
 import datetime
 import logging
-
+import bisect
 
 logging.basicConfig(filename="mini_project\logs.log",filemode='w',level = logging.DEBUG, format = '%(asctime)s - %(levelname)-7s - %(message)s')
+
+
+displaypriority = {
+    "Calls Offered" : 0,
+    "Abandon after 30s" : 1,
+    "FCR" : 2,
+    "DSAT" : 3,
+    "CSAT" : 4
+}
+
 
 
 def verify_file_name(path, extension):
@@ -71,21 +81,42 @@ def get_month_year_cell_positions(sheet_obj, file_month, file_year):
 
 def get_row_information(sheet_obj, row, column):#assumes datetime can be in any column bu the months data is towards is right as specified 
     row_length = len(sheet_obj[row])
+    row_info = list()
     seen_datetime = False # used so if two month cells are in same row so their values are seperated
     for x in range(0, row_length - column + 1):
         cell_value = sheet_obj.cell(row, column + x).value
         cell_column_name = sheet_obj.cell(1, column + x).value#can use 1 since the column name with be on top
         if type(cell_value) == datetime.datetime:
             if seen_datetime == False:
-                logging.info("Starting to display data for day of {0}".format(cell_value))
+                #logging.info("Starting to display data for day of {0}".format(cell_value))
+                row_info.append([cell_value, cell_column_name])
                 seen_datetime = True
             else:
                 return
         elif(cell_value == None or cell_column_name == None) == False:
             if type(cell_value) != float:
-                logging.info("{0} : {1} : row = {2} : column = {3}".format(cell_column_name, cell_value, row, column + x))
+                #logging.info("{0} : {1} : row = {2} : column = {3}".format(cell_column_name, cell_value, row, column + x))
+                row_info.append([cell_value, cell_column_name])
+
             else:
-                logging.info("{0} : {1}%  : row = {2} : column = {3}".format(cell_column_name, cell_value * 100, row, column + x))
+                #logging.info("{0} : {1}%  : row = {2} : column = {3}".format(cell_column_name, cell_value * 100, row, column + x))
+                row_info.append([cell_value * 100, cell_column_name])
+    return row_info
+
+
+def print_row_in_priority_order(row):
+    new_lst = [None] * (len(row) - 1)
+    logging.info(row[0][0])
+    row.remove(row[0])
+    for cell in row:
+        cell[1] = cell[1].strip()
+        new_lst[displaypriority[cell[1]]] = cell[1], cell[0]
+    for element in new_lst:
+        if type(element[1]) == float:
+            logging.info("{} : {}%".format(element[0], element[1]))
+        else:
+            logging.info("{} : {}".format(element[0], element[1]))
+#--------------------- ----------------------------------------
 
 
 logging.debug("Start of program mini_project")
@@ -121,7 +152,12 @@ sheet_obj= wb_obj.active
 logging.info("Successfully loaded excel worksheet")
 
 cell_positions = get_month_year_cell_positions(sheet_obj, file_name_month, file_name_year)#return list of (row,column)
-
+rows_info = list()
 for match in cell_positions:# to be able to handle all instances that can fit the described time frame
-    get_row_information(sheet_obj, match[0], match[1])
+    rows_info.append(get_row_information(sheet_obj, match[0], match[1]))
+
+
+for row in rows_info:
+    print_row_in_priority_order(row)
+
 logging.info("programing successfuly finished execution")
