@@ -19,5 +19,4 @@ for x in range(input_amt):
     height = float(input("Enter height "))
     bmis.append(BMI_classification(weight, height))
 
-for bmi in bmis:
-    print(bmi, end = " ")
+    print(" ".join(bmis))
