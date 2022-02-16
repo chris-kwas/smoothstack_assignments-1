@@ -103,8 +103,8 @@ def print_row_in_priority_order(row):
     "CSAT" : 4
     }
     #logging.info(row[0][0].month)#display timestamp being worked on
-    #logging.info(row[0][0].strftime("Values being displayed for %B"))
-    logging.info(row[0][0].strftime("Values being displayed for %d - %m - %Y"))
+    logging.info(row[0][0].strftime("Values being displayed for %B"))
+    #logging.info(row[0][0].strftime("Values being displayed for %d - %m - %Y"))
     row.remove(row[0])
 
     sorted(row, key=lambda x: displaypriority[x[1].strip()], reverse=False)#sort information based on a dictionary lookup key and  example given
@@ -118,13 +118,13 @@ def print_row_in_priority_order(row):
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 logging.debug("Start of program mini_project")
-path = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_january_2018.xlsx" #from another directory
+#path = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_january_2018.xlsx" #from another directory
 #path = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_march_2018.xlsx" #from another directory
 #path = "C:\\Users\\mskwa_000\\Documents\\expedia_report_test_file_monthly_january_2018.xlsx" #from another directory
 #path = "mini_project\expedia_report_monthly_march_2018.xlsx"#make so program accepts only excel file #from same directory
 #path = "mini_project\expedia_report_monthly_january_2018.xlsx" #from same directory
 #path = "mini_project\expedia_report_test_file_monthly_january_2018.xlsx" #from same directory
-
+path = input("Enter file here: ")
 logging.debug("Check to see if file path exists")
 
 #important to do add for is_proper_path (basically the ifs and else into a function)
