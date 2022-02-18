@@ -114,48 +114,73 @@ def print_row_in_priority_order(row):
             logging.info("{} : {}%".format(cell[1], cell[0])) #for display percetages
         else:
             logging.info("{} : {}".format(cell[1], cell[0])) #for non percentages
-    
+
+
+def get_promoter_score(sheet_obj, file_name_month, file_name_year):#month and year are ints
+        for column_header in sheet_obj[1]:
+            if type(column_header) == datetime.datetime:
+                pass
+            if type:
+                pass
+
+        #print(file_name_month, file_name_year, type(file_name_month), type(file_name_year))
+
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 logging.debug("Start of program mini_project")
-#path = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_january_2018.xlsx" #from another directory
-#path = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_march_2018.xlsx" #from another directory
+path1 = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_january_2018.xlsx" #from another directory
+path2 = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_march_2018.xlsx" #from another directory
 #path = "C:\\Users\\mskwa_000\\Documents\\expedia_report_test_file_monthly_january_2018.xlsx" #from another directory
 #path = "mini_project\expedia_report_monthly_march_2018.xlsx"#make so program accepts only excel file #from same directory
 #path = "mini_project\expedia_report_monthly_january_2018.xlsx" #from same directory
 #path = "mini_project\expedia_report_test_file_monthly_january_2018.xlsx" #from same directory
-path = input("Enter file here: ")
-logging.debug("Check to see if file path exists")
+files = list()
+#files.append(path)#will be the files in a directory later
+files.append(path1)
+files.append(path2)
+logging.debug("Checking to see if file path exists")
 
-#important to do add for is_proper_path (basically the ifs and else into a function)
-file_name, extension = os.path.splitext(path)
+for file in files:
+    file_name, extension = os.path.splitext(file)
 
-if verify_file_name(path, extension) == False:
-    logging.critical("file name {0} could not be verify program ended".format(path))
-    quit()
-else:
-    logging.info("file name {0} could be verified program continuing".format(path))
+    if verify_file_name(file, extension) == False:
+        logging.critical("file name {0} could not be verify program ended".format(file))
+        quit()
+    else:
+        logging.info("file name {0} could be verified program continuing".format(file))
 
-logging.debug("Starting to parse file name {0}".format(path))
-parse = parse_file_name(file_name)
-logging.info("Successfuly parsed file_name {0} and is of supported type {1}".format(path, extension))
-
-logging.debug("Starting search for month and year from parse of file name {0}".format(path))
-file_name_month, file_name_year = get_month_year(parse)
-logging.info("Completed search for month and year from file name {0} : file_name_month = {1}, file_name_year = {2}".format(path, file_name_month, file_name_year))
-
-logging.debug("Starting to load excel worksheet")
-wb_obj = openpyxl.load_workbook(path, read_only=True)
-sheet_obj= wb_obj.active
-logging.info("Successfully loaded excel worksheet")
-
-cell_positions = get_month_year_cell_positions(sheet_obj, file_name_month, file_name_year)#return list of (row,column)
-rows_info = list()
-for match in cell_positions:# to be able to handle all instances that can fit the described time frame
-    rows_info.append(get_row_information(sheet_obj, match[0], match[1]))
+    logging.debug("Starting to parse file name {0}".format(file))
+    parse = parse_file_name(file_name)
+    logging.info("Successfuly parsed file_name {0} and is of supported type {1}".format(file, extension))
 
 
-for row in rows_info:
-    print_row_in_priority_order(row)
+    logging.debug("Starting search for month and year from parse of file name {0}".format(file))
+    file_name_month, file_name_year = get_month_year(parse)
+    logging.info("Completed search for month and year from file name {0} : file_name_month = {1}, file_name_year = {2}".format(file, file_name_month, file_name_year))
 
-logging.info("programing successfuly finished execution")
+    logging.debug("Starting to load excel worksheet from file {}".format(file))
+    wb_obj = openpyxl.load_workbook(file, read_only=True)
+    sheet_obj = wb_obj['Summary Rolling MoM']
+    logging.info("Successfully loaded excel workbook {}".format(sheet_obj.title))
+
+    cell_positions = get_month_year_cell_positions(sheet_obj, file_name_month, file_name_year)#return list of (row,column)
+    rows_info = list()
+    for match in cell_positions:# to be able to handle all instances that can fit the described time frame
+        rows_info.append(get_row_information(sheet_obj, match[0], match[1]))
+
+    for row in rows_info:
+        print_row_in_priority_order(row)
+
+    sheet_obj = wb_obj['VOC Rolling MoM']
+    print(sheet_obj[1][1].value)#rows start counting at 1 columns start counting at 0
+    #get_promoter_score(sheet_obj, file_name_month, file_name_year)
+
+
+
+
+
+
+
+    #print("Loop iteration for file {} finished".format(file), end = "\n")
+
+# logging.info("programing successfuly finished execution")
