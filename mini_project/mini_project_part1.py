@@ -4,6 +4,8 @@ import os
 from os import path as relative_path
 import datetime
 import logging
+import calendar
+import itertools
 
 logging.basicConfig(filename="mini_project\logs.log", filemode='w',level = logging.DEBUG, format = '%(asctime)s:[%(levelname)-8s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
@@ -116,14 +118,54 @@ def print_row_in_priority_order(row):
             logging.info("{} : {}".format(cell[1], cell[0])) #for non percentages
 
 
-def get_promoter_score(sheet_obj, file_name_month, file_name_year):#month and year are ints
-        for column_header in sheet_obj[1]:
-            if type(column_header) == datetime.datetime:
-                pass
-            if type:
-                pass
+def iterate_column(sheet_obj, column_num):#generator
+    x = 1
+    while x < sheet_obj.max_row:
+        yield sheet_obj.cell(row = x, column = column_num)
+        x+=1
 
-        #print(file_name_month, file_name_year, type(file_name_month), type(file_name_year))
+
+def score_review(promoter_type, score):
+    if promoter_type == "Promoters":
+        return (lambda x: "good" if x>200  else "bad")(score)
+    elif promoter_type == "Passives" or promoter_type == "Dectractors":
+        return (lambda x: "good" if x>100  else "bad")(score)
+    else:
+        return "not valid promoter type given"
+
+def find_performance_scores(sheet_obj,column):
+    #desired__performance_score_metrics = ["Promoters (Recommend Score 9 to 10)", "Passives (Recommend Score 7 to 8)", "Dectractors (recommend Score 0 to 6)"]
+    desired__performance_score_metrics = ["Promoters", "Passives", "Dectractors"]
+    gen = iterate_column(sheet_obj, column)
+    x = 1 
+    try:
+        while x < sheet_obj.max_row:
+            possible_desired_value = next(gen)
+            row_pos = possible_desired_value.row
+            row_title  = sheet_obj[row_pos][0].value
+            if type(row_title) == str:
+                row_title = row_title.split(" ")
+                for word in row_title:
+                    if word in desired__performance_score_metrics:
+                        logging.info("{} : {} : {}".format(word, possible_desired_value.value, score_review(word,possible_desired_value.value)))#is desired of reaches here
+            x+=1
+    except:
+        logging.info("processing done for info on calender info given {}".format(sheet_obj.cell(row =1, column = column).value)) 
+
+
+def get_performance_scores(sheet_obj, file_name_month, file_name_year):#month and year are ints
+        for column_header in sheet_obj[1]:
+            cell = column_header.value
+            if type(cell) == datetime.datetime:
+                if cell.month == file_name_month and cell.year == file_name_year:#gets the exact datetime here
+                    find_performance_scores(sheet_obj, column_header.column)
+                    return True
+            elif type(cell) == str:
+                if cell == calendar.month_name[file_name_month]:
+                    find_performance_scores(sheet_obj, column_header.column)
+                    return True
+        logging.critical("Could not find suitable month and year combination on tab {0} invalid file".format(sheet_obj.title))
+        return False
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -159,7 +201,7 @@ for file in files:
     logging.info("Completed search for month and year from file name {0} : file_name_month = {1}, file_name_year = {2}".format(file, file_name_month, file_name_year))
 
     logging.debug("Starting to load excel worksheet from file {}".format(file))
-    wb_obj = openpyxl.load_workbook(file, read_only=True)
+    wb_obj = openpyxl.load_workbook(file, read_only="True")
     sheet_obj = wb_obj['Summary Rolling MoM']
     logging.info("Successfully loaded excel workbook {}".format(sheet_obj.title))
 
@@ -172,15 +214,12 @@ for file in files:
         print_row_in_priority_order(row)
 
     sheet_obj = wb_obj['VOC Rolling MoM']
-    print(sheet_obj[1][1].value)#rows start counting at 1 columns start counting at 0
-    #get_promoter_score(sheet_obj, file_name_month, file_name_year)
+    logging.info("Loading tab 'VOC Rolling MoM'")
+    if get_performance_scores(sheet_obj, file_name_month, file_name_year):
+        logging.info("Found proper information from tab {}".format(sheet_obj.title))
+    else:
+        logging.info("Did not find proper information from tab {}".format(sheet_obj.title))
 
-
-
-
-
-
-
-    #print("Loop iteration for file {} finished".format(file), end = "\n")
+    logging.info("Processing for file {} finished".format(file))
 
 # logging.info("programing successfuly finished execution")
