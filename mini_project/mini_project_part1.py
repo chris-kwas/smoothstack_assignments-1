@@ -6,6 +6,7 @@ import datetime
 import logging
 import calendar
 import itertools
+from os.path import isfile, join
 
 logging.basicConfig(filename="mini_project\logs.log", filemode='w',level = logging.DEBUG, format = '%(asctime)s:[%(levelname)-8s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
@@ -168,21 +169,22 @@ def get_performance_scores(sheet_obj, file_name_month, file_name_year):#month an
         return False
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+#archive_directory
 logging.debug("Start of program mini_project")
-path1 = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_january_2018.xlsx" #from another directory
-path2 = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_march_2018.xlsx" #from another directory
+#path1 = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_january_2018.xlsx" #from another directory
+#path2 = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_march_2018.xlsx" #from another directory
 #path = "C:\\Users\\mskwa_000\\Documents\\expedia_report_test_file_monthly_january_2018.xlsx" #from another directory
 #path = "mini_project\expedia_report_monthly_march_2018.xlsx"#make so program accepts only excel file #from same directory
 #path = "mini_project\expedia_report_monthly_january_2018.xlsx" #from same directory
 #path = "mini_project\expedia_report_test_file_monthly_january_2018.xlsx" #from same directory
-files = list()
-#files.append(path)#will be the files in a directory later
-files.append(path1)
-files.append(path2)
-logging.debug("Checking to see if file path exists")
 
+search_directory = os.fsencode("mini_project\search_directory").decode('utf-8')
+archive_directory = os.fsencode("mini_project\archive_directory").decode('utf-8')
+
+files = next(os.walk(search_directory), (None, None, []))[2]  # [] if no file
 for file in files:
+    file = search_directory + "\\" + file
+    print(file)
     file_name, extension = os.path.splitext(file)
 
     if verify_file_name(file, extension) == False:
@@ -221,5 +223,6 @@ for file in files:
         logging.info("Did not find proper information from tab {}".format(sheet_obj.title))
 
     logging.info("Processing for file {} finished".format(file))
+    #logging.info("Moving file to archive directory located{}".format(archive_directory))
 
 # logging.info("programing successfuly finished execution")
