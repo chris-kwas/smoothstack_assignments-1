@@ -1,3 +1,5 @@
+from distutils.file_util import move_file
+from time import sleep
 import openpyxl
 import functools
 import os
@@ -6,9 +8,36 @@ import datetime
 import logging
 import calendar
 import itertools
-from os.path import isfile, join
+import shutil
+from psutil import process_iter
+from pathlib import Path
+import io
 
 logging.basicConfig(filename="mini_project\logs.log", filemode='w',level = logging.DEBUG, format = '%(asctime)s:[%(levelname)-8s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+
+def has_handle(fpath):
+    for proc in process_iter():
+        try:
+            for item in proc.open_files():
+                if fpath == item.path:
+                    return True
+        except Exception:
+            pass
+    return False
+
+
+def is_file_in_use(file_path):
+    path = Path(file_path)
+    
+    if not path.exists():
+        raise FileNotFoundError
+    
+    try:
+        path.rename(path)
+    except PermissionError:
+        return True
+    else:
+        return False
 
 
 def verify_file_name(path, extension):
@@ -152,7 +181,7 @@ def find_performance_scores(sheet_obj,column):
             x+=1
     except:
         logging.info("processing done for info on calender info given {}".format(sheet_obj.cell(row =1, column = column).value)) 
-
+        gen.close()
 
 def get_performance_scores(sheet_obj, file_name_month, file_name_year):#month and year are ints
         for column_header in sheet_obj[1]:
@@ -165,27 +194,35 @@ def get_performance_scores(sheet_obj, file_name_month, file_name_year):#month an
                 if cell == calendar.month_name[file_name_month]:
                     find_performance_scores(sheet_obj, column_header.column)
                     return True
-        logging.critical("Could not find suitable month and year combination on tab {0} invalid file".format(sheet_obj.title))
+
+        logging.critical("Could not find suitable month and year combination on tab {0} invalid file".format(sheet_obj.title))         
         return False
 
+
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 #archive_directory
 logging.debug("Start of program mini_project")
+#path1 = "C:\\Users\\mskwa_000\\Documents\\GitHub\\smoothstack_assignments\\mini_project\\search_directory\\expedia_report_monthly_january_2018.xlsx"
 #path1 = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_january_2018.xlsx" #from another directory
 #path2 = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_march_2018.xlsx" #from another directory
 #path = "C:\\Users\\mskwa_000\\Documents\\expedia_report_test_file_monthly_january_2018.xlsx" #from another directory
 #path = "mini_project\expedia_report_monthly_march_2018.xlsx"#make so program accepts only excel file #from same directory
 #path = "mini_project\expedia_report_monthly_january_2018.xlsx" #from same directory
 #path = "mini_project\expedia_report_test_file_monthly_january_2018.xlsx" #from same directory
+archive_directory = os.fsencode("C:\\Users\\mskwa_000\\Documents\\GitHub\\smoothstack_assignments\\mini_project\\archive_directory").decode('utf-8')
+search_directory =  os.fsencode("C:\\Users\\mskwa_000\\Documents\\GitHub\\smoothstack_assignments\\mini_project\\search_directory").decode('utf-8')
 
-search_directory = os.fsencode("mini_project\search_directory").decode('utf-8')
-archive_directory = os.fsencode("mini_project\archive_directory").decode('utf-8')
+filelst =  open("filelst.txt", "a")
+
 
 files = next(os.walk(search_directory), (None, None, []))[2]  # [] if no file
 for file in files:
+
     file = search_directory + "\\" + file
-    print(file)
     file_name, extension = os.path.splitext(file)
+    with open(file, 'rb') as f:
+        in_mem_file = io.BytesIO(f.read())
 
     if verify_file_name(file, extension) == False:
         logging.critical("file name {0} could not be verify program ended".format(file))
@@ -197,21 +234,21 @@ for file in files:
     parse = parse_file_name(file_name)
     logging.info("Successfuly parsed file_name {0} and is of supported type {1}".format(file, extension))
 
-
     logging.debug("Starting search for month and year from parse of file name {0}".format(file))
     file_name_month, file_name_year = get_month_year(parse)
     logging.info("Completed search for month and year from file name {0} : file_name_month = {1}, file_name_year = {2}".format(file, file_name_month, file_name_year))
 
     logging.debug("Starting to load excel worksheet from file {}".format(file))
-    wb_obj = openpyxl.load_workbook(file, read_only="True")
+    wb_obj = openpyxl.load_workbook(in_mem_file, read_only="True")
     sheet_obj = wb_obj['Summary Rolling MoM']
     logging.info("Successfully loaded excel workbook {}".format(sheet_obj.title))
 
     cell_positions = get_month_year_cell_positions(sheet_obj, file_name_month, file_name_year)#return list of (row,column)
-    rows_info = list()
+    rows_info = list()###################this for loop is where things start to break
+    
     for match in cell_positions:# to be able to handle all instances that can fit the described time frame
         rows_info.append(get_row_information(sheet_obj, match[0], match[1]))
-
+        pass
     for row in rows_info:
         print_row_in_priority_order(row)
 
@@ -221,8 +258,9 @@ for file in files:
         logging.info("Found proper information from tab {}".format(sheet_obj.title))
     else:
         logging.info("Did not find proper information from tab {}".format(sheet_obj.title))
-
-    logging.info("Processing for file {} finished".format(file))
-    #logging.info("Moving file to archive directory located{}".format(archive_directory))
-
-# logging.info("programing successfuly finished execution")
+    logging.info("Processing for file {} finished".format(file))  
+    #print(has_handle(path1))
+    #print(is_file_in_use(path1))
+    #print(is_file_in_use(file))
+    shutil.move(file,archive_directory)
+filelst.close()
