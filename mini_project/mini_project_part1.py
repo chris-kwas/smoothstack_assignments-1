@@ -15,16 +15,6 @@ import io
 
 logging.basicConfig(filename="mini_project\logs.log", filemode='w',level = logging.DEBUG, format = '%(asctime)s:[%(levelname)-8s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
-def has_handle(fpath):
-    for proc in process_iter():
-        try:
-            for item in proc.open_files():
-                if fpath == item.path:
-                    return True
-        except Exception:
-            pass
-    return False
-
 
 def is_file_in_use(file_path):
     path = Path(file_path)
@@ -38,6 +28,29 @@ def is_file_in_use(file_path):
         return True
     else:
         return False
+
+def is_processed(file_path, filelst):
+    if type(filelst) == str:
+        filelst = open(filelst, "r+")
+    else:
+        filelst = open(filelst.name, "r+")
+
+    lst = filelst.read()
+    found = False
+    if file_path in lst:
+        found = True
+    filelst.close()
+    return found
+
+
+def marked_as_processed(file_path, filelst):
+    if type(filelst) == str:
+        filelst = open(filelst, "a+")
+    else:
+        filelst = open(filelst.name, "a+")
+    filelst.write(file_path + "\n")
+    filelst.close()
+
 
 
 def verify_file_name(path, extension):
@@ -212,39 +225,53 @@ logging.debug("Start of program mini_project")
 #path = "mini_project\expedia_report_test_file_monthly_january_2018.xlsx" #from same directory
 archive_directory = os.fsencode("C:\\Users\\mskwa_000\\Documents\\GitHub\\smoothstack_assignments\\mini_project\\archive_directory").decode('utf-8')
 search_directory =  os.fsencode("C:\\Users\\mskwa_000\\Documents\\GitHub\\smoothstack_assignments\\mini_project\\search_directory").decode('utf-8')
+error_directory =   os.fsencode("C:\\Users\\mskwa_000\\Documents\\GitHub\\smoothstack_assignments\\mini_project\\error_directory").decode('utf-8')
 
-filelst =  open("filelst.txt", "a")
+filelst = 'filelst.txt'
+try:
+    filelst = open('filelst.txt','x')
+    filelst.close()
+except:
+    pass
 
 
 files = next(os.walk(search_directory), (None, None, []))[2]  # [] if no file
-for file in files:
 
-    file = search_directory + "\\" + file
-    file_name, extension = os.path.splitext(file)
-    with open(file, 'rb') as f:
-        in_mem_file = io.BytesIO(f.read())
+for file_path in files:
+    file_path = search_directory + "\\" + file_path
 
-    if verify_file_name(file, extension) == False:
-        logging.critical("file name {0} could not be verify program ended".format(file))
+    if is_processed(file_path, filelst):
+        logging.info("File {} already processed moving to error directory {}".format(file_path, error_directory))
+        continue
+    else:
+        print("Not found")
+        pass
+
+    file_name, extension = os.path.splitext(file_path)
+    with open(file_path, 'rb') as f:
+        file = io.BytesIO(f.read())
+
+    if verify_file_name(file_path, extension) == False:
+        logging.critical("file name {0} could not be verify program ended".format(file_path))
         quit()
     else:
-        logging.info("file name {0} could be verified program continuing".format(file))
+        logging.info("file name {0} could be verified program continuing".format(file_path))
 
-    logging.debug("Starting to parse file name {0}".format(file))
+    logging.debug("Starting to parse file name {0}".format(file_path))
     parse = parse_file_name(file_name)
-    logging.info("Successfuly parsed file_name {0} and is of supported type {1}".format(file, extension))
+    logging.info("Successfuly parsed file_name {0} and is of supported type {1}".format(file_path, extension))
 
-    logging.debug("Starting search for month and year from parse of file name {0}".format(file))
+    logging.debug("Starting search for month and year from parse of file name {0}".format(file_path))
     file_name_month, file_name_year = get_month_year(parse)
-    logging.info("Completed search for month and year from file name {0} : file_name_month = {1}, file_name_year = {2}".format(file, file_name_month, file_name_year))
+    logging.info("Completed search for month and year from file name {0} : file_name_month = {1}, file_name_year = {2}".format(file_path, file_name_month, file_name_year))
 
-    logging.debug("Starting to load excel worksheet from file {}".format(file))
-    wb_obj = openpyxl.load_workbook(in_mem_file, read_only="True")
+    logging.debug("Starting to load excel worksheet from file {}".format(file_path))
+    wb_obj = openpyxl.load_workbook(file, read_only="True")
     sheet_obj = wb_obj['Summary Rolling MoM']
     logging.info("Successfully loaded excel workbook {}".format(sheet_obj.title))
 
     cell_positions = get_month_year_cell_positions(sheet_obj, file_name_month, file_name_year)#return list of (row,column)
-    rows_info = list()###################this for loop is where things start to break
+    rows_info = list()
     
     for match in cell_positions:# to be able to handle all instances that can fit the described time frame
         rows_info.append(get_row_information(sheet_obj, match[0], match[1]))
@@ -258,9 +285,7 @@ for file in files:
         logging.info("Found proper information from tab {}".format(sheet_obj.title))
     else:
         logging.info("Did not find proper information from tab {}".format(sheet_obj.title))
-    logging.info("Processing for file {} finished".format(file))  
-    #print(has_handle(path1))
-    #print(is_file_in_use(path1))
-    #print(is_file_in_use(file))
-    shutil.move(file,archive_directory)
-filelst.close()
+    logging.info("Processing for file {} finished moving to archive directory {}".format(file_path, archive_directory))  
+    #print(is_file_in_use(file_path))  
+    marked_as_processed(file_path,filelst)
+    shutil.move(file_path,archive_directory)  
