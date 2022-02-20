@@ -1,3 +1,86 @@
-2022-02-20 01:16:06:[DEBUG   ]: Start of program mini_project
-2022-02-20 01:16:06:[INFO    ]: File C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_january_2018.xlsx already processed moving to error directory C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\error_directory
-2022-02-20 01:16:06:[INFO    ]: File C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_march_2018.xlsx already processed moving to error directory C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\error_directory
+2022-02-20 15:49:34:[DEBUG   ]: Start of program mini_project
+2022-02-20 15:49:34:[INFO    ]: Starting processing of file C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_january_2018.xlsx
+2022-02-20 15:49:34:[INFO    ]: Acessing file C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_january_2018.xlsx
+2022-02-20 15:49:34:[INFO    ]: File C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_january_2018.xlsx successfully found
+2022-02-20 15:49:34:[INFO    ]: file name C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_january_2018.xlsx could be verified program continuing
+2022-02-20 15:49:34:[DEBUG   ]: Starting to parse file name C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_january_2018.xlsx
+2022-02-20 15:49:34:[INFO    ]: Successfully parsed file_name C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_january_2018.xlsx and is of supported type .xlsx
+2022-02-20 15:49:34:[DEBUG   ]: Starting to load excel worksheet from file C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_january_2018.xlsx
+2022-02-20 15:49:34:[INFO    ]: file C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_january_2018.xlsx is validated excel file
+2022-02-20 15:49:34:[INFO    ]: Successfully loaded excel workbook
+2022-02-20 15:49:34:[DEBUG   ]: Starting search for month and year from parse of file name C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_january_2018.xlsx
+2022-02-20 15:49:34:[WARNING ]: Still searching for year and month from file name
+2022-02-20 15:49:34:[WARNING ]: Still searching for year and month from file name
+2022-02-20 15:49:34:[WARNING ]: Still searching for year and month from file name
+2022-02-20 15:49:34:[WARNING ]: Still searching for year and month from file name
+2022-02-20 15:49:34:[WARNING ]: Still searching for year and month from file name
+2022-02-20 15:49:34:[WARNING ]: Still searching for year and month from file name
+2022-02-20 15:49:34:[WARNING ]: Still searching for year and month from file name
+2022-02-20 15:49:34:[INFO    ]: Found month from file name 'january' converting to month number 1 for later use
+2022-02-20 15:49:34:[INFO    ]: Found year from file name 2018
+2022-02-20 15:49:34:[INFO    ]: Completed search for month and year from file name C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_january_2018.xlsx : file_name_month = 1, file_name_year = 2018
+2022-02-20 15:49:34:[INFO    ]: Acessing excel workbook tab 'Summary Rolling MoM'
+2022-02-20 15:49:34:[DEBUG   ]: Starting search for all locations of rows with information about report on month 1 and year 2018
+2022-02-20 15:49:34:[INFO    ]: Found cell with approriate dating at cell_coordinates (12, 1) with value 2018-01-01 00:00:00
+2022-02-20 15:49:34:[INFO    ]: Found 1 cells with approriate dating
+2022-02-20 15:49:34:[INFO    ]: Values being displayed for January
+2022-02-20 15:49:34:[INFO    ]: Calls Offered : 16915
+2022-02-20 15:49:34:[INFO    ]: Abandon after 30s : 2.32%
+2022-02-20 15:49:34:[INFO    ]: FCR : 86.5%
+2022-02-20 15:49:34:[INFO    ]: DSAT : 14.2%
+2022-02-20 15:49:34:[INFO    ]: CSAT : 78.3%
+2022-02-20 15:49:34:[INFO    ]: Acessing excel workbook tab 'VOC Rolling MoM'
+2022-02-20 15:49:34:[INFO    ]: Loading tab 'VOC Rolling MoM'
+2022-02-20 15:49:34:[INFO    ]: Promoters : 256 : good
+2022-02-20 15:49:34:[INFO    ]: Passives : 86 : bad
+2022-02-20 15:49:34:[INFO    ]: Dectractors : 86 : bad
+2022-02-20 15:49:34:[INFO    ]: processing done for info on calender info given 2018-01-01 00:00:00
+2022-02-20 15:49:34:[INFO    ]: Found proper information from tab VOC Rolling MoM
+2022-02-20 15:49:34:[INFO    ]: Processing for file C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_january_2018.xlsx finished moving to archive directory C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\archive_directory
+2022-02-20 15:49:34:[INFO    ]: Starting processing of file C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_march_2018.xlsx
+2022-02-20 15:49:34:[INFO    ]: Acessing file C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_march_2018.xlsx
+2022-02-20 15:49:34:[INFO    ]: File C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_march_2018.xlsx successfully found
+2022-02-20 15:49:34:[INFO    ]: file name C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_march_2018.xlsx could be verified program continuing
+2022-02-20 15:49:34:[DEBUG   ]: Starting to parse file name C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_march_2018.xlsx
+2022-02-20 15:49:34:[INFO    ]: Successfully parsed file_name C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_march_2018.xlsx and is of supported type .xlsx
+2022-02-20 15:49:34:[DEBUG   ]: Starting to load excel worksheet from file C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_march_2018.xlsx
+2022-02-20 15:49:34:[INFO    ]: file C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_march_2018.xlsx is validated excel file
+2022-02-20 15:49:34:[INFO    ]: Successfully loaded excel workbook
+2022-02-20 15:49:34:[DEBUG   ]: Starting search for month and year from parse of file name C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_march_2018.xlsx
+2022-02-20 15:49:34:[WARNING ]: Still searching for year and month from file name
+2022-02-20 15:49:34:[WARNING ]: Still searching for year and month from file name
+2022-02-20 15:49:34:[WARNING ]: Still searching for year and month from file name
+2022-02-20 15:49:34:[WARNING ]: Still searching for year and month from file name
+2022-02-20 15:49:34:[WARNING ]: Still searching for year and month from file name
+2022-02-20 15:49:34:[WARNING ]: Still searching for year and month from file name
+2022-02-20 15:49:34:[WARNING ]: Still searching for year and month from file name
+2022-02-20 15:49:34:[INFO    ]: Found month from file name 'march' converting to month number 3 for later use
+2022-02-20 15:49:34:[INFO    ]: Found year from file name 2018
+2022-02-20 15:49:34:[INFO    ]: Completed search for month and year from file name C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_march_2018.xlsx : file_name_month = 3, file_name_year = 2018
+2022-02-20 15:49:34:[INFO    ]: Acessing excel workbook tab 'Summary Rolling MoM'
+2022-02-20 15:49:34:[DEBUG   ]: Starting search for all locations of rows with information about report on month 3 and year 2018
+2022-02-20 15:49:34:[INFO    ]: Found cell with approriate dating at cell_coordinates (4, 1) with value 2018-03-18 00:00:00
+2022-02-20 15:49:34:[INFO    ]: Found 1 cells with approriate dating
+2022-02-20 15:49:34:[INFO    ]: Values being displayed for March
+2022-02-20 15:49:34:[INFO    ]: Calls Offered : 22343
+2022-02-20 15:49:34:[INFO    ]: Abandon after 30s : 3.05%
+2022-02-20 15:49:34:[INFO    ]: FCR : 86.0%
+2022-02-20 15:49:34:[INFO    ]: DSAT : 18.0%
+2022-02-20 15:49:34:[INFO    ]: CSAT : 74.4%
+2022-02-20 15:49:34:[INFO    ]: Acessing excel workbook tab 'VOC Rolling MoM'
+2022-02-20 15:49:34:[INFO    ]: Loading tab 'VOC Rolling MoM'
+2022-02-20 15:49:34:[INFO    ]: Promoters : 279 : good
+2022-02-20 15:49:34:[INFO    ]: Passives : 21 : bad
+2022-02-20 15:49:34:[INFO    ]: Dectractors : 33 : bad
+2022-02-20 15:49:35:[INFO    ]: processing done for info on calender info given March
+2022-02-20 15:49:35:[INFO    ]: Found proper information from tab VOC Rolling MoM
+2022-02-20 15:49:35:[INFO    ]: Processing for file C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_march_2018.xlsx finished moving to archive directory C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\archive_directory
+2022-02-20 15:49:35:[INFO    ]: Starting processing of file C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_test_file_monthly_january_2018.xlsx
+2022-02-20 15:49:35:[INFO    ]: Acessing file C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_test_file_monthly_january_2018.xlsx
+2022-02-20 15:49:35:[INFO    ]: File C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_test_file_monthly_january_2018.xlsx successfully found
+2022-02-20 15:49:35:[INFO    ]: file name C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_test_file_monthly_january_2018.xlsx could be verified program continuing
+2022-02-20 15:49:35:[DEBUG   ]: Starting to parse file name C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_test_file_monthly_january_2018.xlsx
+2022-02-20 15:49:35:[INFO    ]: Successfully parsed file_name C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_test_file_monthly_january_2018.xlsx and is of supported type .xlsx
+2022-02-20 15:49:35:[DEBUG   ]: Starting to load excel worksheet from file C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_test_file_monthly_january_2018.xlsx
+2022-02-20 15:49:35:[INFO    ]: file C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_test_file_monthly_january_2018.xlsx is not a valid excel file moving to error_directory
+2022-02-20 15:49:35:[INFO    ]: Program finished processing all files in search directory C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory
