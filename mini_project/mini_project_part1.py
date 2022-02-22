@@ -153,9 +153,9 @@ def iterate_column(sheet_obj, column_num):#generator
 
 def score_review(promoter_type, score):
     if promoter_type == "Promoters":
-        return (lambda x: "good" if x>200  else "bad")(score)
+        return (lambda x: "good because greater than 200" if x>200  else "bad because lesser than 200")(score)
     elif promoter_type == "Passives" or promoter_type == "Dectractors":
-        return (lambda x: "good" if x>100  else "bad")(score)
+        return (lambda x: "good because greater than 100" if x>100  else "bad because lesser than 100")(score)
     else:
         return "not valid promoter type given"
 
@@ -197,24 +197,27 @@ def get_performance_scores(sheet_obj, file_name_month, file_name_year):#month an
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+
+
+
 logging.debug("Start of program mini_project")
 archive_directory = os.fsencode("C:\\Users\\mskwa_000\\Documents\\GitHub\\smoothstack_assignments\\mini_project\\archive_directory").decode('utf-8')
 search_directory =  os.fsencode("C:\\Users\\mskwa_000\\Documents\\GitHub\\smoothstack_assignments\\mini_project\\search_directory").decode('utf-8')
 error_directory =   os.fsencode("C:\\Users\\mskwa_000\\Documents\\GitHub\\smoothstack_assignments\\mini_project\\error_directory").decode('utf-8')
+filelst = "C:\\Users\\mskwa_000\\Documents\\GitHub\\smoothstack_assignments\\mini_project\\filelst.lst"
 
-filelst = 'filelst.txt'
+
 try:#creates file if not already created
-    filelst = open('filelst.txt','x')
+    filelst = open(filelst,'x')
     filelst.close()
 except:
     pass
 
 files = next(os.walk(search_directory), (None, None, []))[2]  # [] if no file
-
 for file_path in files:
     file_path = search_directory + "\\" + file_path
     if is_processed(file_path, filelst):
-        logging.info("File {} already processed moving to error directory {}".format(file_path, error_directory))
+        logging.error("File {} already processed moving to error directory {}".format(file_path, error_directory))
         shutil.move(file_path, error_directory)
         continue
     else:
