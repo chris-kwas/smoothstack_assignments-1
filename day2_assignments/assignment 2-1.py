@@ -12,29 +12,29 @@ def is_palindrome(text):
     return
 
 if __name__ == '__main__':
-    #start of coding exersice 3:
-    print("Hello World"[8])
-    string = "thinker"
-    answer = slice(2, 5, 1)
-    print(string[answer])
+    # #start of coding exersice 3:
+    # print("Hello World"[8])
+    # string = "thinker"
+    # answer = slice(2, 5, 1)
+    # print(string[answer])
     
-    #S=’hello’,what is the output of h[1]
-    #answer = e
-    #S=’Sammy’ what is the output of s[2:]”
-    #answer = mmy
+    # #S=’hello’,what is the output of h[1]
+    # #answer = e
+    # #S=’Sammy’ what is the output of s[2:]”
+    # #answer = mmy
     
-    #With a single set function can you turn the word ‘Mississippi’ to distinct character word.
-    word = "".join(set("Mississippi"))
-    print(word)
+    # #With a single set function can you turn the word ‘Mississippi’ to distinct character word.
+    # word = "".join(set("Mississippi"))
+    # print(word)
 
-    input_line_amt = int(input())
-    phrases = list()
-    for x in range(input_line_amt):
-        text_line = input()
-        phrases.append(text_line)
-    for phrase in phrases:
-        is_palindrome(phrase)
+    # input_line_amt = int(input())
+    # phrases = list()
+    # for x in range(input_line_amt):
+    #     text_line = input()
+    #     phrases.append(text_line)
+    # for phrase in phrases:
+    #     is_palindrome(phrase)
+    x = "HelloWorld"
 
-
-
+    print(x[:5], x[5:])
 
