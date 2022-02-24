@@ -4,8 +4,34 @@ import os
 from os import path as relative_path
 import datetime
 import logging
+import calendar
+import shutil
+from pathlib import Path
+import io
 
 logging.basicConfig(filename="mini_project\logs.log", filemode='w',level = logging.DEBUG, format = '%(asctime)s:[%(levelname)-8s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+
+
+def is_processed(file_path, filelst):
+    if type(filelst) == str:
+        filelst = open(filelst, "r+")
+    else:
+        filelst = open(filelst.name, "r+")
+    lst = filelst.read()
+    found = False
+    if file_path in lst:
+        found = True
+    filelst.close()
+    return found
+
+
+def marked_as_processed(file_path, filelst):
+    if type(filelst) == str:
+        filelst = open(filelst, "a+")
+    else:
+        filelst = open(filelst.name, "a+")
+    filelst.write(file_path + "\n")
+    filelst.close()
 
 
 def verify_file_name(path, extension):
@@ -30,6 +56,17 @@ def parse_file_name(file):
     return file.split()
     
 
+def is_valid_excel_file(wb_obj):
+    excepted_sheet_names = ['Summary Rolling MoM','VOC Rolling MoM','Monthly Verbatim Statements']
+    tab_amt = len(wb_obj.sheetnames)
+    if tab_amt != len(excepted_sheet_names):
+        return False
+    for tab in wb_obj.sheetnames:
+        if tab in excepted_sheet_names == False:
+            return False
+    return True
+
+
 def get_month_year(parsed):#list of strings as input
     month_year = [None,None]
     for text in parsed:
@@ -47,7 +84,7 @@ def get_month_year(parsed):#list of strings as input
             logging.warning("Still searching for year and month from file name")
 
     logging.critical("could not find month and year program ended")
-    quit()
+    return False
 
 
 #function does a smart scan
@@ -62,9 +99,6 @@ def get_month_year_cell_positions(sheet_obj, file_month, file_year):
                     logging.info("Found cell with approriate dating at cell_coordinates {0} with value {1}".format(cell_coordinates, column.value))
                     matching_datetime_cells.append(cell_coordinates)
     amt_of_matches = len(matching_datetime_cells)
-    if amt_of_matches == 0:
-         logging.critical("Could not find any suitable dates")
-         quit()
     logging.info("Found {0} cells with approriate dating".format(amt_of_matches))
     return matching_datetime_cells
 
@@ -78,18 +112,14 @@ def get_row_information(sheet_obj, row, column):#assumes datetime can be in any 
         cell_column_name = sheet_obj.cell(1, column + x).value#can use 1 since the column name with be on top
         if type(cell_value) == datetime.datetime:
             if seen_datetime == False:
-                #logging.info("Starting to display data for day of {0}".format(cell_value))
                 row_info.append([cell_value, cell_column_name])
                 seen_datetime = True
             else:
                 return
         elif(cell_value == None or cell_column_name == None) == False:
             if type(cell_value) != float:
-                #logging.info("{0} : {1} : row = {2} : column = {3}".format(cell_column_name, cell_value, row, column + x))
                 row_info.append([cell_value, cell_column_name])
-
             else:
-                #logging.info("{0} : {1}%  : row = {2} : column = {3}".format(cell_column_name, cell_value * 100, row, column + x))
                 row_info.append([cell_value * 100, cell_column_name])
     return row_info
 
@@ -102,9 +132,7 @@ def print_row_in_priority_order(row):
     "DSAT" : 3,
     "CSAT" : 4
     }
-    #logging.info(row[0][0].month)#display timestamp being worked on
     logging.info(row[0][0].strftime("Values being displayed for %B"))
-    #logging.info(row[0][0].strftime("Values being displayed for %d - %m - %Y"))
     row.remove(row[0])
 
     sorted(row, key=lambda x: displaypriority[x[1].strip()], reverse=False)#sort information based on a dictionary lookup key and  example given
@@ -114,48 +142,153 @@ def print_row_in_priority_order(row):
             logging.info("{} : {}%".format(cell[1], cell[0])) #for display percetages
         else:
             logging.info("{} : {}".format(cell[1], cell[0])) #for non percentages
-    
+
+
+def iterate_column(sheet_obj, column_num):#generator
+    x = 1
+    while x < sheet_obj.max_row:
+        yield sheet_obj.cell(row = x, column = column_num)
+        x+=1
+
+
+def score_review(promoter_type, score):
+    if promoter_type == "Promoters":
+        return (lambda x: "good because greater than 200" if x>200  else "bad because lesser than 200")(score)
+    elif promoter_type == "Passives" or promoter_type == "Dectractors":
+        return (lambda x: "good because greater than 100" if x>100  else "bad because lesser than 100")(score)
+    else:
+        return "not valid promoter type given"
+
+def find_performance_scores(sheet_obj,column):
+    desired__performance_score_metrics = ["Promoters", "Passives", "Dectractors"]
+    gen = iterate_column(sheet_obj, column)
+    x = 1 
+    try:
+        while x < sheet_obj.max_row:
+            possible_desired_value = next(gen)
+            row_pos = possible_desired_value.row
+            row_title  = sheet_obj[row_pos][0].value
+            if type(row_title) == str:
+                row_title = row_title.split(" ")
+                for word in row_title:
+                    if word in desired__performance_score_metrics:
+                        logging.info("{} : {} : {}".format(word, possible_desired_value.value, score_review(word,possible_desired_value.value)))#is desired of reaches here
+            x+=1
+    except:
+        logging.info("processing done for info on calender info given {}".format(sheet_obj.cell(row =1, column = column).value)) 
+        gen.close()
+
+def get_performance_scores(sheet_obj, file_name_month, file_name_year):#month and year are ints
+        for column_header in sheet_obj[1]:
+            cell = column_header.value
+            if type(cell) == datetime.datetime:
+                if cell.month == file_name_month and cell.year == file_name_year:#gets the exact datetime here
+                    find_performance_scores(sheet_obj, column_header.column)
+                    return True
+            elif type(cell) == str:
+                if cell == calendar.month_name[file_name_month]:
+                    find_performance_scores(sheet_obj, column_header.column)
+                    return True
+
+        logging.critical("Could not find suitable month and year combination on tab {0} invalid file".format(sheet_obj.title))         
+        return False
+
+
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 logging.debug("Start of program mini_project")
-#path = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_january_2018.xlsx" #from another directory
-#path = "C:\\Users\\mskwa_000\\Downloads\\problem_statement_cloud_foundations\\expedia_report_monthly_march_2018.xlsx" #from another directory
-#path = "C:\\Users\\mskwa_000\\Documents\\expedia_report_test_file_monthly_january_2018.xlsx" #from another directory
-#path = "mini_project\expedia_report_monthly_march_2018.xlsx"#make so program accepts only excel file #from same directory
-#path = "mini_project\expedia_report_monthly_january_2018.xlsx" #from same directory
-#path = "mini_project\expedia_report_test_file_monthly_january_2018.xlsx" #from same directory
-path = input("Enter file here: ")
-logging.debug("Check to see if file path exists")
-
-#important to do add for is_proper_path (basically the ifs and else into a function)
-file_name, extension = os.path.splitext(path)
-
-if verify_file_name(path, extension) == False:
-    logging.critical("file name {0} could not be verify program ended".format(path))
-    quit()
-else:
-    logging.info("file name {0} could be verified program continuing".format(path))
-
-logging.debug("Starting to parse file name {0}".format(path))
-parse = parse_file_name(file_name)
-logging.info("Successfuly parsed file_name {0} and is of supported type {1}".format(path, extension))
-
-logging.debug("Starting search for month and year from parse of file name {0}".format(path))
-file_name_month, file_name_year = get_month_year(parse)
-logging.info("Completed search for month and year from file name {0} : file_name_month = {1}, file_name_year = {2}".format(path, file_name_month, file_name_year))
-
-logging.debug("Starting to load excel worksheet")
-wb_obj = openpyxl.load_workbook(path, read_only=True)
-sheet_obj= wb_obj.active
-logging.info("Successfully loaded excel worksheet")
-
-cell_positions = get_month_year_cell_positions(sheet_obj, file_name_month, file_name_year)#return list of (row,column)
-rows_info = list()
-for match in cell_positions:# to be able to handle all instances that can fit the described time frame
-    rows_info.append(get_row_information(sheet_obj, match[0], match[1]))
+archive_directory = os.fsencode("C:\\Users\\mskwa_000\\Documents\\GitHub\\smoothstack_assignments\\mini_project\\archive_directory").decode('utf-8')
+search_directory =  os.fsencode("C:\\Users\\mskwa_000\\Documents\\GitHub\\smoothstack_assignments\\mini_project\\search_directory").decode('utf-8')
+error_directory =   os.fsencode("C:\\Users\\mskwa_000\\Documents\\GitHub\\smoothstack_assignments\\mini_project\\error_directory").decode('utf-8')
+filelst = "C:\\Users\\mskwa_000\\Documents\\GitHub\\smoothstack_assignments\\mini_project\\filelst.lst"
 
 
-for row in rows_info:
-    print_row_in_priority_order(row)
+try:#creates file if not already created
+    filelst = open(filelst,'x')
+    filelst.close()
+except:
+    pass
+#datetime.strftime('%Y-%m-%d )
+files = next(os.walk(search_directory), (None, None, []))[2]  # [] if no file
+# try:
+#     files.append(input("Enter complete file path here: "))
+# except:
+#     pass
+for file_path in files:
+    file_path = search_directory + "\\" + file_path
+    if is_processed(file_path, filelst):
+        logging.error("File {} already processed moving to error directory {}".format(file_path, error_directory))
+        shutil.move(file_path, error_directory)
+        continue
+    else:
+        logging.info("Starting processing of file {}".format(file_path))
 
-logging.info("programing successfuly finished execution")
+    logging.info("Acessing file {}".format(file_path))
+    file_name, extension = os.path.splitext(file_path)
+    with open(file_path, 'rb') as f:
+        file = io.BytesIO(f.read())
+
+    if verify_file_name(file_path, extension) == False:
+        logging.critical("file name {0} could not be verify program ended".format(file_path))
+        logging.info("file name {0} moved to error directory {1}".format(file_path, error_directory))
+        shutil.move(file_path, error_directory)
+        continue
+    else:
+        logging.info("file name {0} could be verified program continuing".format(file_path))
+
+    logging.debug("Starting to parse file name {0}".format(file_path))
+    parse = parse_file_name(file_name)
+    logging.info("Successfully parsed file_name {0} and is of supported type {1}".format(file_path, extension))
+
+    logging.debug("Starting to load excel worksheet from file {}".format(file_path))
+    wb_obj = openpyxl.load_workbook(file, read_only="True")
+
+    #checks to see if excel file is missing a tab    
+    if is_valid_excel_file(wb_obj) == False:
+        logging.info("file {} is not a valid excel file moving to error_directory".format(file_path, error_directory))
+        marked_as_processed(file_path, filelst)
+        shutil.move(file_path, error_directory)
+        continue
+    else:
+        logging.info("file {} is validated excel file".format(file_path))
+
+    logging.info("Successfully loaded excel workbook")
+    
+    logging.debug("Starting search for month and year from parse of file name {0}".format(file_path))
+    
+    try:
+        file_name_month, file_name_year = get_month_year(parse)
+    except:
+        logging.info("file did not have valid information moving to error directory".format(error_directory))
+        marked_as_processed(file_path, filelst)
+        shutil.move(file_path, error_directory)
+        continue
+    logging.info("Completed search for month and year from file name {0} : file_name_month = {1}, file_name_year = {2}".format(file_path, file_name_month, file_name_year))
+
+    logging.info("Acessing excel workbook tab 'Summary Rolling MoM'")
+    sheet_obj = wb_obj['Summary Rolling MoM']
+    cell_positions = get_month_year_cell_positions(sheet_obj, file_name_month, file_name_year)#return list of (row,column)
+    if len(cell_positions) == 0:
+        logging.info("Since could not find any appropriate imformation stopping processing of file".format(file_path))
+        marked_as_processed(file_path, filelst)
+        shutil.move(file_path, error_directory)
+        continue
+    rows_info = list()
+    
+    for match in cell_positions:# to be able to handle all instances that can fit the described time frame
+        rows_info.append(get_row_information(sheet_obj, match[0], match[1]))
+        pass
+    for row in rows_info:
+        print_row_in_priority_order(row)
+
+    logging.info("Acessing excel workbook tab 'VOC Rolling MoM'")
+    sheet_obj = wb_obj['VOC Rolling MoM']
+    logging.info("Loading tab 'VOC Rolling MoM'")
+    if get_performance_scores(sheet_obj, file_name_month, file_name_year):
+        logging.info("Found proper information from tab {}".format(sheet_obj.title))
+    else:
+        logging.info("Did not find proper information from tab {}".format(sheet_obj.title))
+    logging.info("Processing for file {} finished moving to archive directory {}".format(file_path, archive_directory))  
+    marked_as_processed(file_path,filelst)
+    shutil.move(file_path,archive_directory)
+logging.info("Program finished processing all files in search directory {}".format(search_directory))
