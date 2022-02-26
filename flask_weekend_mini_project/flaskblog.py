@@ -1,6 +1,7 @@
 from flask import Flask, render_template, url_for, flash, redirect
 from forms import RegistrationForm, LoginForm
 from flask import Response
+from db_interface import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
@@ -44,7 +45,7 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
+        if form.email.data == 'admin@blog.com' and form.password.data == 'password':#hard coded try not doing that(instructor did not say to not make hardcoded)
             flash('You have been logged in!', 'success')
             return redirect(url_for('home'))
         else:
