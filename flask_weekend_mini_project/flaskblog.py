@@ -1,9 +1,8 @@
 from multiprocessing import connection
-import sqlite3
 from flask import Flask, render_template, url_for, flash, redirect
 from forms import RegistrationForm, LoginForm
 from flask import Response
-from db_interface import *
+from db_interface import get_all_users
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
@@ -22,16 +21,16 @@ posts = [
         'date_posted': 'April 21, 2018'
     }
 ]
-users = [
-    {
-        'username': 'Corey Schafer',
-        'email': 'email 1',
-    },
-    {
-        'username': 'Jane Doe',
-        'email': 'email 2',
-    }
-]
+# users = [
+#     {
+#         'username': 'Corey Schafer',
+#         'email': 'email 1',
+#     },
+#     {
+#         'username': 'Jane Doe',
+#         'email': 'email 2',
+#     }
+# ]
 @app.route("/")
 @app.route("/home")
 def home():
@@ -39,7 +38,8 @@ def home():
 
 @app.route("/admin")
 def admin():
-    return render_template('admin.html', users=users)
+    all_users = get_all_users()
+    return render_template('admin.html', users=all_users)
 
 
 @app.route("/about")

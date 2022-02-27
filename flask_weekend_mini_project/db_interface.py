@@ -1,10 +1,13 @@
 from datetime import datetime
-from flaskblog import app
+from email.policy import default
+
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:flask_weekend_mini_project///site.db'
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy(app)
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -13,11 +16,13 @@ class User(db.Model):
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
-	# PRIMARY KEY (id), 
-	# UNIQUE (username), 
-	# UNIQUE (email)
+
+    # PRIMARY KEY (id),
+    # UNIQUE (username),
+    # UNIQUE (email)
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
+
 
 posts = [
     {
@@ -34,24 +39,60 @@ posts = [
     }
 ]
 
+
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-	# PRIMARY KEY (id), 
-	# FOREIGN KEY(user_id) REFERENCES user (id)
+
+    # PRIMARY KEY (id),
+    # FOREIGN KEY(user_id) REFERENCES user (id)
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"
 
-    def interst_into_postdb(self):
-        for post in posts:
-            self.cursor.execute(''' INSERT INTO table (title,date_posted ,content) VALUES (title,date_posted ,content)''')
-    
-    def import_Post(self):
-        results = []
-        self.cursor.execute('''SELECT * FROM post;''')
-        for title, date_posted, content in self.cursor.fetchall():
-            results.append(Post(title, date_posted, content))
-        return results
+
+
+def create_db():
+    db.create_all()
+
+def add_user():
+    admin = User(username='user', email='other@example.com',password='12334')
+    db.session.add(admin)
+    db.session.commit()
+
+def dump_users():
+    print(User.query.all())
+
+
+def added_post():
+    user = User.query.filter_by(username='admin').first()
+    post = Post(title='how to have fun', content='Some text')
+    user.posts.append(post)
+    db.session.add(post)
+    db.session.commit()
+    print(Post.query.all())
+    print(User.query.all())
+    print(user.posts)
+
+
+def get_all_users():
+    #user = User.query.filter_by(username='admin')
+    # print("user posts : ", user.posts)
+    #posts = Post.query.all()
+    load_db()
+    users =  User.query.all()
+    print(print(users))
+    return users
+
+def load_db():
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+    db = SQLAlchemy(app)
+
+
+
+#if __name__ == '__main__':
+    #add_user()
+    #print(get_all_users())
