@@ -1,12 +1,17 @@
 <html>
     <head></head>
-    <body>
-        {% extends "layout.html" %} {% block content %}
-            <h1>Admin Page</h1>
-
-
-
-            
-          {% endblock content %}
+    <body>{% extends "layout.html" %}
+    <h1>Admin Page</h1>
+    {% block content %}
+        {% for user in users %}
+            <article class="media content-section">
+              <div class="media-body">
+                <div class="article-metadata">
+                  <a class="mr-2" href="#">{{ user.username }}</a>
+                  <small class="text-muted">{{ user.email }}</small>
+                </div>
+            </article>
+        {% endfor %}
+    {% endblock content %}
     </body>
 </html>

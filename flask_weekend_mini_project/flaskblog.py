@@ -22,7 +22,16 @@ posts = [
         'date_posted': 'April 21, 2018'
     }
 ]
-
+users = [
+    {
+        'username': 'Corey Schafer',
+        'email': 'email 1',
+    },
+    {
+        'username': 'Jane Doe',
+        'email': 'email 2',
+    }
+]
 @app.route("/")
 @app.route("/home")
 def home():
@@ -30,7 +39,7 @@ def home():
 
 @app.route("/admin")
 def admin():
-    return render_template('admin.html')
+    return render_template('admin.html', users=users)
 
 
 @app.route("/about")
