@@ -1,3 +1,5 @@
+from multiprocessing import connection
+import sqlite3
 from flask import Flask, render_template, url_for, flash, redirect
 from forms import RegistrationForm, LoginForm
 from flask import Response
@@ -25,6 +27,10 @@ posts = [
 @app.route("/home")
 def home():
     return render_template('home.html', posts=posts)
+
+@app.route("/admin")
+def admin():
+    return render_template('admin.html')
 
 
 @app.route("/about")
