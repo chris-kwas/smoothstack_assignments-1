@@ -39,7 +39,7 @@ class PersonDatabase(object):
         self.connection.commit()
 
     def read(self, name):
-        read_query = """SELET email, password FROM persons WHERE name = ?;"""
+        read_query = """SELECT email, password FROM persons WHERE name = ?;"""
         self.cursor.execute(read_query, (name,))
         email, password = self.cursor.fetchone()
         return Person(name, email, password)
