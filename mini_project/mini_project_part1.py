@@ -1,13 +1,16 @@
-import openpyxl
-import functools
+import io
 import os
 from os import path as relative_path
-import datetime
-import logging
-import calendar
 import shutil
-from pathlib import Path
-import io
+import logging
+import datetime
+import calendar
+import functools
+import openpyxl
+import pylint.lint
+
+path = 'mini_project\mini_project_part1.py'
+pylint_opts = ['--disable=line-too-long','--disable=trailing-whitespace', path]
 
 logging.basicConfig(filename="mini_project\logs.log", filemode='w',level = logging.DEBUG, format = '%(asctime)s:[%(levelname)-8s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
@@ -47,7 +50,7 @@ def verify_file_name(path, extension):
     else:
         logging.info("File {0} successfully found".format(path))
         return flag
-    return flag        
+    return flag
 
 
 def parse_file_name(file):
@@ -74,7 +77,8 @@ def get_month_year(parsed):#list of strings as input
             month_year[1] = int(text) # gets year
             logging.info("Found year from file name {0}".format(month_year[1]))
             if type(month_year[0]) == int:
-                return month_year[0], month_year[1] #can return because year is given after month in the formating described
+                #can return because year is given after month in the formating described
+                return month_year[0], month_year[1]
         try:
             month = datetime.datetime.strptime(text, "%B").month
             month_year[0] = month
@@ -89,7 +93,8 @@ def get_month_year(parsed):#list of strings as input
 
 #function does a smart scan
 def get_month_year_cell_positions(sheet_obj, file_month, file_year):
-    matching_datetime_cells = list()#list of cell coordionates that met description
+    #list of cell coordionates that met description
+    matching_datetime_cells = list()
     logging.debug("Starting search for all locations of rows with information about report on month {0} and year {1}".format(file_month, file_year))
     for row in sheet_obj:
         for column in row:
@@ -179,19 +184,19 @@ def find_performance_scores(sheet_obj,column):
         gen.close()
 
 def get_performance_scores(sheet_obj, file_name_month, file_name_year):#month and year are ints
-        for column_header in sheet_obj[1]:
-            cell = column_header.value
-            if type(cell) == datetime.datetime:
-                if cell.month == file_name_month and cell.year == file_name_year:#gets the exact datetime here
-                    find_performance_scores(sheet_obj, column_header.column)
-                    return True
-            elif type(cell) == str:
-                if cell == calendar.month_name[file_name_month]:
-                    find_performance_scores(sheet_obj, column_header.column)
-                    return True
+    for column_header in sheet_obj[1]:
+        cell = column_header.value
+        if type(cell) == datetime.datetime:
+            if cell.month == file_name_month and cell.year == file_name_year:#gets the exact datetime here
+                find_performance_scores(sheet_obj, column_header.column)
+                return True
+        elif type(cell) == str:
+            if cell == calendar.month_name[file_name_month]:
+                find_performance_scores(sheet_obj, column_header.column)
+                return True
 
-        logging.critical("Could not find suitable month and year combination on tab {0} invalid file".format(sheet_obj.title))         
-        return False
+    logging.critical("Could not find suitable month and year combination on tab {0} invalid file".format(sheet_obj.title))         
+    return False
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -292,3 +297,4 @@ for file_path in files:
     marked_as_processed(file_path,filelst)
     shutil.move(file_path,archive_directory)
 logging.info("Program finished processing all files in search directory {}".format(search_directory))
+pylint.lint.Run(pylint_opts)

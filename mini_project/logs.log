@@ -1,5 +1,2 @@
-2022-02-22 18:01:55:[DEBUG   ]: Start of program mini_project
-2022-02-22 18:01:55:[ERROR   ]: File C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_january_2018.xlsx already processed moving to error directory C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\error_directory
-2022-02-22 18:01:55:[ERROR   ]: File C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_monthly_march_2018.xlsx already processed moving to error directory C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\error_directory
-2022-02-22 18:01:55:[ERROR   ]: File C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory\expedia_report_test_file_monthly_january_2018.xlsx already processed moving to error directory C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\error_directory
-2022-02-22 18:01:55:[INFO    ]: Program finished processing all files in search directory C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory
+2022-03-02 12:03:40:[DEBUG   ]: Start of program mini_project
+2022-03-02 12:03:40:[INFO    ]: Program finished processing all files in search directory C:\Users\mskwa_000\Documents\GitHub\smoothstack_assignments\mini_project\search_directory
