@@ -8,7 +8,6 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy(app)
 
-
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
@@ -81,18 +80,15 @@ def get_all_users():
     #user = User.query.filter_by(username='admin')
     # print("user posts : ", user.posts)
     #posts = Post.query.all()
-    load_db()
-    users =  User.query.all()
+    #load_db()
+    users = User.query.all()
     print(print(users))
     return users
 
-def load_db():
-    app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-    db = SQLAlchemy(app)
 
 
 
-#if __name__ == '__main__':
-    #add_user()
-    #print(get_all_users())
+
+
+if __name__ == '__main__':
+    print(get_all_users())
