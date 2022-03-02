@@ -10,13 +10,13 @@ import openpyxl
 import pylint.lint
 
 path = 'mini_project\mini_project_part1.py'
-pylint_opts = ['--disable=line-too-long','--disable=trailing-whitespace', path]
+pylint_opts = ['--disable=line-too-long','--disable=trailing-whitespace','--disable=logging-format-interpolation','--disable=consider-using-f-string', path]
 
 logging.basicConfig(filename="mini_project\logs.log", filemode='w',level = logging.DEBUG, format = '%(asctime)s:[%(levelname)-8s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 
 def is_processed(file_path, filelst):
-    if type(filelst) == str:
+    if isinstance(filelst,str):
         filelst = open(filelst, "r+")
     else:
         filelst = open(filelst.name, "r+")
@@ -29,7 +29,7 @@ def is_processed(file_path, filelst):
 
 
 def marked_as_processed(file_path, filelst):
-    if type(filelst) == str:
+    if isinstance(filelst,str):
         filelst = open(filelst, "a+")
     else:
         filelst = open(filelst.name, "a+")
@@ -39,13 +39,14 @@ def marked_as_processed(file_path, filelst):
 
 def verify_file_name(path, extension):
     flag = True
-    if relative_path.isfile(path) == False:
-        logging.error("Provided path {0} is not a file program ended".format(path))
+    if relative_path.isfile(path) is False:
+        #logging.error("Provided path {0} is not a file program ended".format(path))
+        logging.error(f"Provided path {path} is not a file program ended")
         flag = False
     if extension != ".xlsx":
         logging.critical("File type {0} is not supported".format(extension))
         flag = False
-    if relative_path.exists(path) == False or flag == False:
+    if relative_path.exists(path) is False or flag is False:
         logging.critical("File {0} not found program ended".format(path))
     else:
         logging.info("File {0} successfully found".format(path))
@@ -75,8 +76,8 @@ def get_month_year(parsed):#list of strings as input
     for text in parsed:
         if text.isnumeric():
             month_year[1] = int(text) # gets year
-            logging.info("Found year from file name {0}".format(month_year[1]))
-            if type(month_year[0]) == int:
+            logging.info(f"Found year from file name {month_year[1]}")
+            if isinstance(month_year[0], int):
                 #can return because year is given after month in the formating described
                 return month_year[0], month_year[1]
         try:
@@ -94,11 +95,11 @@ def get_month_year(parsed):#list of strings as input
 #function does a smart scan
 def get_month_year_cell_positions(sheet_obj, file_month, file_year):
     #list of cell coordionates that met description
-    matching_datetime_cells = list()
+    matching_datetime_cells = []
     logging.debug("Starting search for all locations of rows with information about report on month {0} and year {1}".format(file_month, file_year))
     for row in sheet_obj:
         for column in row:
-            if type(column.value) == datetime.datetime:
+            if isinstance(column.value, datetime.datetime):
                 if column.value.month == file_month and column.value.year == file_year:#gets the exact datetime here
                     cell_coordinates = (column.row, column.column)
                     logging.info("Found cell with approriate dating at cell_coordinates {0} with value {1}".format(cell_coordinates, column.value))
@@ -110,19 +111,19 @@ def get_month_year_cell_positions(sheet_obj, file_month, file_year):
 
 def get_row_information(sheet_obj, row, column):#assumes datetime can be in any column bu the months data is towards is right as specified 
     row_length = len(sheet_obj[row])
-    row_info = list()
+    row_info = []
     seen_datetime = False # used so if two month cells are in same row so their values are seperated
     for x in range(0, row_length - column + 1):
         cell_value = sheet_obj.cell(row, column + x).value
         cell_column_name = sheet_obj.cell(1, column + x).value#can use 1 since the column name with be on top
-        if type(cell_value) == datetime.datetime:
-            if seen_datetime == False:
+        if isinstance(cell_value,datetime.datetime):
+            if seen_datetime is False:
                 row_info.append([cell_value, cell_column_name])
                 seen_datetime = True
             else:
                 return
-        elif(cell_value == None or cell_column_name == None) == False:
-            if type(cell_value) != float:
+        elif(cell_value is None or cell_column_name is None) is False:
+            if isinstance(cell_value,float) is False:
                 row_info.append([cell_value, cell_column_name])
             else:
                 row_info.append([cell_value * 100, cell_column_name])
@@ -143,7 +144,7 @@ def print_row_in_priority_order(row):
     sorted(row, key=lambda x: displaypriority[x[1].strip()], reverse=False)#sort information based on a dictionary lookup key and  example given
     for cell in row:
         cell[1] = cell[1].strip() #sanitize display for output
-        if type(cell[0]) == float:
+        if isinstance(cell[0],float):
             logging.info("{} : {}%".format(cell[1], cell[0])) #for display percetages
         else:
             logging.info("{} : {}".format(cell[1], cell[0])) #for non percentages
@@ -173,7 +174,7 @@ def find_performance_scores(sheet_obj,column):
             possible_desired_value = next(gen)
             row_pos = possible_desired_value.row
             row_title  = sheet_obj[row_pos][0].value
-            if type(row_title) == str:
+            if isinstance(row_title,str):
                 row_title = row_title.split(" ")
                 for word in row_title:
                     if word in desired__performance_score_metrics:
@@ -186,11 +187,11 @@ def find_performance_scores(sheet_obj,column):
 def get_performance_scores(sheet_obj, file_name_month, file_name_year):#month and year are ints
     for column_header in sheet_obj[1]:
         cell = column_header.value
-        if type(cell) == datetime.datetime:
+        if isinstance(cell,datetime.datetime):
             if cell.month == file_name_month and cell.year == file_name_year:#gets the exact datetime here
                 find_performance_scores(sheet_obj, column_header.column)
                 return True
-        elif type(cell) == str:
+        elif isinstance(cell,str):
             if cell == calendar.month_name[file_name_month]:
                 find_performance_scores(sheet_obj, column_header.column)
                 return True
@@ -225,8 +226,7 @@ for file_path in files:
         logging.error("File {} already processed moving to error directory {}".format(file_path, error_directory))
         shutil.move(file_path, error_directory)
         continue
-    else:
-        logging.info("Starting processing of file {}".format(file_path))
+    logging.info("Starting processing of file {}".format(file_path))
 
     logging.info("Acessing file {}".format(file_path))
     file_name, extension = os.path.splitext(file_path)
@@ -238,8 +238,7 @@ for file_path in files:
         logging.info("file name {0} moved to error directory {1}".format(file_path, error_directory))
         shutil.move(file_path, error_directory)
         continue
-    else:
-        logging.info("file name {0} could be verified program continuing".format(file_path))
+    logging.info("file name {0} could be verified program continuing".format(file_path))
 
     logging.debug("Starting to parse file name {0}".format(file_path))
     parse = parse_file_name(file_name)
@@ -249,13 +248,12 @@ for file_path in files:
     wb_obj = openpyxl.load_workbook(file, read_only="True")
 
     #checks to see if excel file is missing a tab    
-    if is_valid_excel_file(wb_obj) == False:
-        logging.info("file {} is not a valid excel file moving to error_directory".format(file_path, error_directory))
+    if is_valid_excel_file(wb_obj) is False:
+        logging.info("file {} is not a valid excel file moving to error_directory {}".format(file_path, error_directory))
         marked_as_processed(file_path, filelst)
         shutil.move(file_path, error_directory)
         continue
-    else:
-        logging.info("file {} is validated excel file".format(file_path))
+    logging.info("file {} is validated excel file".format(file_path))
 
     logging.info("Successfully loaded excel workbook")
     
@@ -278,11 +276,10 @@ for file_path in files:
         marked_as_processed(file_path, filelst)
         shutil.move(file_path, error_directory)
         continue
-    rows_info = list()
+    rows_info = []
     
     for match in cell_positions:# to be able to handle all instances that can fit the described time frame
         rows_info.append(get_row_information(sheet_obj, match[0], match[1]))
-        pass
     for row in rows_info:
         print_row_in_priority_order(row)
 
