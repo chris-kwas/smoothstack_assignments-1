@@ -11,7 +11,7 @@ def visit():
     #.get asks for specificed key(visit-count) if key doesnt exists creates it and sets value to second value (0)
     visit_count=request.cookies.get('visit-count', 0)#return string
     message =  "This is visit number {} ".format({int(visit_count)})
-    resp = make_response(render_template('home.html', amt=message))#return http respose object
+    resp = make_response(render_template('cookie.html', amt=message))#return http respose object
     vscount = int(visit_count) + 1
     resp.set_cookie('visit-count', str(vscount))#cookie values are strings
     return resp
