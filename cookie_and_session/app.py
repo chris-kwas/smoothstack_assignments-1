@@ -7,7 +7,7 @@ app.config['DEBUG'] = True
     
 @app.route('/cookie', methods=['GET','POST'])  
 def visit():
-    #cookies is a dictiony
+    #cookies is a dictionary
     #.get asks for specificed key(visit-count) if key doesnt exists creates it and sets value to second value (0)
     visit_count=request.cookies.get('visit-count', 0)#return string
     message =  "This is visit number {} ".format({int(visit_count)})
