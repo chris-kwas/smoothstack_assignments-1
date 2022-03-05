@@ -8,9 +8,8 @@
 # if __name__ =="__main__":  
 #     app.run(debug = True)  
 import datetime
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, Response
 app=Flask(__name__,)
-
 # @app.route('/')
 # def index():
 #     return 'Web App with python Flask!'
@@ -21,6 +20,8 @@ def about():
 @app.route('/home')
 def home():
     return render_template('home.html')
-
+@app.route('/input',methods=['GET', 'POST'])
+def input():
+    return render_template('input.html')
 if __name__ =="__main__":  
     app.run(debug = True)  
