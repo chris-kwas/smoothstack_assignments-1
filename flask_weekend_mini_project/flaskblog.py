@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from db_interface import User, Post
 from forms import RegistrationForm, LoginForm
-from flask import Response
+from flask import request, make_response ,session, Response
 #from db_interface import get_all_users
 
 app = Flask(__name__)
@@ -59,8 +59,9 @@ def about():
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
-    if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data, password=form.password.data)
+    user=User(username=form.username.data, email=form.email.data, password=form.password.data)
+    print("asdsad", user.query.filter_by(username=form.username.data))
+    if form.validate_on_submit() and user.query.filter_by(username=form.username.data).first() == None and user.query.filter_by(email=form.email.data).first() == None:
         db.session.add(user)
         db.session.commit()
         flash(f'Account created for {form.username.data}!', 'success')
@@ -82,6 +83,17 @@ def login():
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
+# @app.route('/cookie', methods=['GET','POST'])  
+# def visit():
+#     #cookies is a dictionary
+#     #.get asks for specificed key(visit-count) if key doesnt exists creates it and sets value to second value (0)
+#     visit_count=request.cookies.get('visit-count', 0)#return string
+#     message =  "This is visit number {} ".format({int(visit_count)})
+#     resp = make_response(render_template('cookie.html', amt=message))#return http respose object
+#     vscount = int(visit_count) + 1
+#     resp.set_cookie('visit-count', str(vscount))#cookie values are strings
+#     return resp
+
 
 
 if __name__ == '__main__':
