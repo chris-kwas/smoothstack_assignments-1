@@ -20,8 +20,8 @@ def about():
 @app.route('/home')
 def home():
     return render_template('home.html')
-@app.route('/input',methods=['GET', 'POST'])
+@app.route('/',methods=['GET', 'POST'])
 def input():
     return render_template('input.html')
 if __name__ =="__main__":  
-    app.run(debug = True)  
+    app.run(debug = True)
