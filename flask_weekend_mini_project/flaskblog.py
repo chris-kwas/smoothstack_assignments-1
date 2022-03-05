@@ -48,8 +48,10 @@ def home():
 
 @app.route("/admin")
 def admin():
-    return render_template('admin.html', users=User.query.all())
-
+    if 'email' in session:
+        return render_template('admin.html', users=User.query.all())
+    else:
+        return redirect(url_for('login'))
 
 @app.route("/about")
 def about():
@@ -72,10 +74,27 @@ def register():
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    try:
+        if session['email'] == "admin@blog.com":
+            return redirect(url_for('admin'))
+        elif session['email'] != "admin@blog.com":
+            flash('You have been logged in!' + {form.email}, 'success')
+            print("asdasdasdasdasdasdas")
+            return redirect(url_for('login'))
+    except:
+        pass
+
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user is not None and user.password == form.password.data:
-            flash('You have been logged in!', 'success')
+            if request.method == 'POST':
+                email = request.form['email']
+                session['email'] = email
+                if form.email.data == 'admin@blog.com':
+                    return redirect(url_for('admin'))
+                else:
+                    return redirect(url_for('login'))
+
             if form.email.data == 'admin@blog.com':
                 return redirect(url_for('admin'))
             else:
@@ -83,16 +102,23 @@ def login():
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
-# @app.route('/cookie', methods=['GET','POST'])  
-# def visit():
-#     #cookies is a dictionary
-#     #.get asks for specificed key(visit-count) if key doesnt exists creates it and sets value to second value (0)
-#     visit_count=request.cookies.get('visit-count', 0)#return string
-#     message =  "This is visit number {} ".format({int(visit_count)})
-#     resp = make_response(render_template('cookie.html', amt=message))#return http respose object
-#     vscount = int(visit_count) + 1
-#     resp.set_cookie('visit-count', str(vscount))#cookie values are strings
-#     return resp
+# @app.route('/login', methods=['GET','POST'])  
+# def login():
+#         if request.method == 'POST':
+#             person = request.form['name']#needs to be same variable name as in the html 
+#             session['name'] = person 
+#             return redirect(url_for('name', name=person))
+#         else:
+#             return render_template('login.html') 
+
+
+# @app.route("/name")
+# def name():
+#     if 'name' in session:
+#         name = session['name']
+#         return f'<h1>{name}</h1>'
+#     else:
+#         return  redirect(url_for('login'))
 
 
 
