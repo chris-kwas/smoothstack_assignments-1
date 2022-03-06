@@ -77,9 +77,11 @@ def register():
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     try:
-        if session.get('email') == None:
+        if request.cookies.get('email') == None:
+            #print("entered here", request.cookies.get(email))
             form = LoginForm()
         else:
+            print("entered there")
             form = LoginForm(form=LoginForm(email=session.get('email')))
     except:
         pass
@@ -128,13 +130,10 @@ def logout():
         #if remember me is check need to move sessions to long term cookies
         try:
             if bool(session['remember']) == True:
-                # email = request.cookies.set('email',session.get('email'))
-                # password = request.cookies.get('password',True)
+                email = request.cookies.get('email',session.get('email'))
+                password = request.cookies.get('password',True)
                 print("remember = ", bool(session['remember']))
-
-                resp = make_response(render_template('login.html',title='Login',form=LoginForm(email=session.get('email'),password=True,remember=False)))
-                resp.set_cookie('email', session.get('email'))
-                resp.set_cookie('password', True)
+                resp = make_response(render_template('login.html',title='Login',form=LoginForm(email=email,password=password,remember=bool(session.get('remember')))))
                 clear_session()
                 for x in session:
                     x=None
