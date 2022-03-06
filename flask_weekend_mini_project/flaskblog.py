@@ -1,9 +1,8 @@
 from multiprocessing import connection
 from flask import Flask, render_template, url_for, flash, redirect
 from flask_sqlalchemy import SQLAlchemy
-
 from db_interface import User, Post
-from forms import RegistrationForm, LoginForm
+from forms import RegistrationForm, LoginForm, Logout
 from flask import request, make_response ,session, Response
 #from db_interface import get_all_users
 
@@ -43,15 +42,17 @@ db = SQLAlchemy(app)
 @app.route("/")
 @app.route("/home")
 def home():
+    if session.get('email'):
+        flash(f"Logged in, Welcome {session['email']}")
+    else:
+        flash(f"You are not logged in")
+
     return render_template('home.html', posts=Post.query.all())
 
 
 @app.route("/admin")
 def admin():
-    if 'email' in session:
-        return render_template('admin.html', users=User.query.all())
-    else:
-        return redirect(url_for('login'))
+    return render_template('admin.html', users=User.query.all())
 
 @app.route("/about")
 def about():
@@ -77,31 +78,43 @@ def login():
     try:
         if session['email'] == "admin@blog.com":
             return redirect(url_for('admin'))
-        elif session['email'] != "admin@blog.com":
-            flash('You have been logged in!' + {form.email}, 'success')
-            print("asdasdasdasdasdasdas")
-            return redirect(url_for('login'))
+        else:
+            return redirect(url_for('home'))
     except:
         pass
 
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user is not None and user.password == form.password.data:
-            if request.method == 'POST':
-                email = request.form['email']
-                session['email'] = email
-                if form.email.data == 'admin@blog.com':
-                    return redirect(url_for('admin'))
-                else:
-                    return redirect(url_for('login'))
+            email = request.form['email']
+            session['email'] = email
+            password = request.form['password']
+            session['password'] = password
+            print(form.data)
+            #remember = request.form['remember']
+            #session['remember'] = str(1)
 
             if form.email.data == 'admin@blog.com':
                 return redirect(url_for('admin'))
             else:
-                return redirect(url_for('login'))
+                return redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
+
+@app.route("/logout", methods=['GET', 'POST'])
+def logout():
+    form = Logout()
+    if form.is_submitted():
+        #delete sessions if remember me isnt checked
+        if session.get():
+            pass
+        
+        
+        return redirect(url_for('login'))
+    return render_template('logout.html',form=form)
+
+
 # @app.route('/login', methods=['GET','POST'])  
 # def login():
 #         if request.method == 'POST':
