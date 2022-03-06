@@ -107,6 +107,7 @@ def login():
 def logout():
     form = Logout()
     if form.is_submitted():
+        #if remeber me is check need to move sessions to long term cookies
         session.clear()        
         return redirect(url_for('login'))
     return render_template('logout.html',form=form)
