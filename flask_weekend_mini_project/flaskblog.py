@@ -90,9 +90,10 @@ def login():
             session['email'] = email
             password = request.form['password']
             session['password'] = password
-            print(form.data)
-            #remember = request.form['remember']
-            session['remember'] = form.remember.data
+            #print(form.data)
+            if form.remember.data:
+                remember = request.form['remember']
+                session['remember'] = remember
 
             if form.email.data == 'admin@blog.com':
                 return redirect(url_for('admin'))
@@ -107,8 +108,7 @@ def logout():
     form = Logout()
     if form.is_submitted():
         #delete sessions if remember me isnt checked
-        if session.get('remember'):
-            session.clear()        
+        session.clear()        
         return redirect(url_for('login'))
     return render_template('logout.html',form=form)
 
