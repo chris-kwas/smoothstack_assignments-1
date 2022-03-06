@@ -107,7 +107,6 @@ def login():
 def logout():
     form = Logout()
     if form.is_submitted():
-        #delete sessions if remember me isnt checked
         session.clear()        
         return redirect(url_for('login'))
     return render_template('logout.html',form=form)
