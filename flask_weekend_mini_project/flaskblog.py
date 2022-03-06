@@ -1,6 +1,8 @@
+from http import cookies
 from multiprocessing import connection
 from flask import Flask, render_template, url_for, flash, redirect
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import false
 from db_interface import User, Post
 from forms import RegistrationForm, LoginForm, Logout
 from flask import request, make_response ,session, Response
@@ -74,7 +76,14 @@ def register():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
+    try:
+        if session.get('email') == None:
+            form = LoginForm()
+        else:
+            form = LoginForm(form=LoginForm(email=session.get('email')))
+    except:
+        pass
+
     try:
         if session['email'] == "admin@blog.com":
             return redirect(url_for('admin'))
@@ -90,8 +99,14 @@ def login():
             session['email'] = email
             password = request.form['password']
             session['password'] = password
-            session['remember'] = False
-            print("asdsadsa", form.remember.data)
+
+            if  form.remember.data:
+                print("box checked")
+            else:
+                print("box not checked")
+
+
+
             if form.remember.data:
                 remember = request.form['remember']
                 session['remember'] = remember
@@ -101,6 +116,9 @@ def login():
                 return redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
+
+    for x in request.cookies:
+        print(x)
     return render_template('login.html', title='Login', form=form)
 
 @app.route("/logout", methods=['GET', 'POST'])
@@ -110,17 +128,20 @@ def logout():
         #if remember me is check need to move sessions to long term cookies
         try:
             if bool(session['remember']) == True:
-                email = request.cookies.get('email',session.get('email'))
-                password = request.cookies.get('password',True)
+                # email = request.cookies.set('email',session.get('email'))
+                # password = request.cookies.get('password',True)
+                print("remember = ", bool(session['remember']))
+
+                resp = make_response(render_template('login.html',title='Login',form=LoginForm(email=session.get('email'),password=True,remember=False)))
+                resp.set_cookie('email', session.get('email'))
+                resp.set_cookie('password', True)
                 clear_session()
                 for x in session:
                     x=None
-                resp = make_response(render_template('login.html',title='Login',form=LoginForm(email=email,password=password,remember=False)))
                 return resp
         except:
             pass
         clear_session()
-        #request.cookies.clear()
         return redirect(url_for('login'))
     return render_template('logout.html',form=form)
 
