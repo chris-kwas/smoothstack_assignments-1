@@ -108,7 +108,10 @@ def logout():
     if form.is_submitted():
         #if remeber me is check need to move sessions to long term cookies
         if bool(session['remember']) == True:
-            pass
+            email = request.cookies.get('email',session.get('email'))
+            password = request.cookies.get('pasword',session.get('password'))
+            resp = make_response(render_template('login.html',title='Login',form=LoginForm(email=email,password=password,remember=True)))
+            return resp
         session.clear()        
         return redirect(url_for('login'))
     return render_template('logout.html',form=form)
