@@ -90,7 +90,8 @@ def login():
             session['email'] = email
             password = request.form['password']
             session['password'] = password
-            session['remember'] = form.remember.data
+            session['remember'] = False
+            print("asdsadsa", form.remember.data)
             if form.remember.data:
                 remember = request.form['remember']
                 session['remember'] = remember
@@ -107,11 +108,14 @@ def logout():
     form = Logout()
     if form.is_submitted():
         #if remeber me is check need to move sessions to long term cookies
-        if bool(session['remember']) == True:
-            email = request.cookies.get('email',session.get('email'))
-            password = request.cookies.get('pasword',session.get('password'))
-            resp = make_response(render_template('login.html',title='Login',form=LoginForm(email=email,password=password,remember=True)))
-            return resp
+        try:
+            if bool(session['remember']) == True:
+                email = request.cookies.get('email',session.get('email'))
+                password = request.cookies.get('pasword',session.get('password'))
+                resp = make_response(render_template('login.html',title='Login',form=LoginForm(email=email,password=password,remember=True)))
+                return resp
+        except:
+            pass    
         session.clear()        
         return redirect(url_for('login'))
     return render_template('logout.html',form=form)
