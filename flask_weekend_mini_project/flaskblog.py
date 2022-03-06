@@ -107,18 +107,29 @@ def login():
 def logout():
     form = Logout()
     if form.is_submitted():
-        #if remeber me is check need to move sessions to long term cookies
+        #if remember me is check need to move sessions to long term cookies
         try:
             if bool(session['remember']) == True:
                 email = request.cookies.get('email',session.get('email'))
-                password = request.cookies.get('pasword',session.get('password'))
-                resp = make_response(render_template('login.html',title='Login',form=LoginForm(email=email,password=password,remember=True)))
+                password = request.cookies.get('password',True)
+                clear_session()
+                for x in session:
+                    x=None
+                resp = make_response(render_template('login.html',title='Login',form=LoginForm(email=email,password=password,remember=False)))
                 return resp
         except:
-            pass    
-        session.clear()        
+            pass
+        clear_session()
+        #request.cookies.clear()
         return redirect(url_for('login'))
     return render_template('logout.html',form=form)
+
+
+def clear_session():
+    session.clear()    
+    for x in session:
+        x=None
+
 
 
 # @app.route('/cookie', methods=['GET','POST'])  
