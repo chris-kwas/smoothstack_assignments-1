@@ -173,9 +173,7 @@ def comment():
     return render_template('comment.html', title='Comment', form=form)
 
 
-
-
 if __name__ == '__main__':
-    pylint.lint.Run(pylint_opts)
+    #pylint.lint.Run(pylint_opts)
     app.run(debug=True)
     
