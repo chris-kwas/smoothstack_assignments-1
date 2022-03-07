@@ -67,7 +67,6 @@ def about():
 def register():
     form = RegistrationForm()
     user=User(username=form.username.data, email=form.email.data, password=form.password.data)
-    print("asdsad", user.query.filter_by(username=form.username.data))
     if form.validate_on_submit() and user.query.filter_by(username=form.username.data).first() == None and user.query.filter_by(email=form.email.data).first() == None:
         db.session.add(user)
         db.session.commit()
@@ -141,8 +140,10 @@ def logout():
                 return resp
         except Exception as e:
             print(f'Exception 1 {e}')
+        
+        if request.cookies.get('email') == session.get('email'):
+            delete_cookie(resp)
         clear_session()
-        delete_cookie(resp)
         return resp
     return render_template('logout.html', form=form)
 
