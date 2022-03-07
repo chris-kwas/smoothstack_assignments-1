@@ -10,7 +10,7 @@
                   <small class="text-muted">{{ post.date_posted }}</small>
                 </div>
                 <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
-                <h2><a class="article-title" href="#">{{ image }}</a></h2>
+                <p class="user-pic"><img src="{{ url_for('author_picture', author=post.author.username) }}"></p>
                 <p class="article-content">{{ post.content }}</p>
               </div>
             </article>

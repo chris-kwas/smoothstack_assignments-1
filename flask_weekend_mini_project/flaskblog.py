@@ -25,12 +25,7 @@ def home():
         flash(f"Logged in, Welcome {session['email']}")
     else:
         flash(f"You are not logged in")
-    picture = db.session.query(User).filter_by(email=session['email']).first().image
-    # picture = Image.frombytes(Image.getmodebands(picture),(100,100),picture)
-    with open(picture,  encoding='0xff ') as file:
-        picture = bytearray(file.read())
-
-    return render_template('home.html', posts=Post.query.order_by(Post.id.desc()).all(),image=picture)# reverse order
+    return render_template('home.html', posts=Post.query.order_by(Post.id.desc()).all())# reverse order
 
 
 @app.route("/admin")
@@ -51,6 +46,8 @@ def register():
         db.session.commit()
         flash(f'Account created for {form.username.data}!', 'success')
         return redirect(url_for('home'))
+    elif form.validate_on_submit():
+        flash(f'Account already exist for username {form.username.data} and/or email {form.email.data}! Please try again.', 'failure')
     return render_template('register.html', title='Register', form=form)
 
 
@@ -98,13 +95,10 @@ def login():
 def logout():
     form = Logout()
     if form.is_submitted():
-        #if remember me is check need to move sessions to long term cookies
         try:
             resp = make_response(redirect(url_for('login')))
             if bool(session.get('remember')) is True:
                 request.cookies.get('email',session.get('email'))
-                #email = request.cookies.get('email',session.get('email'))
-                #resp = make_response('login.html', render_template('login.html', title='Login', form=LoginForm(email=email, password=password, remember=bool(session.get('remember')))))
                 resp.set_cookie('email', session.get('email'))#errorline
                 resp.set_cookie('remember', session['remember'])
                 clear_session()
@@ -136,7 +130,7 @@ def user_picture():
     # allows caching of picture for better performance
     user = db.session.query(User).filter_by(email=session['email']).first()
     if user.image is None:
-        with open("static/default.jpg", "rb") as file:
+        with open("flask_weekend_mini_project\static\default_image.png", "rb") as file:
             image = bytearray(file.read())
     else:
         image = user.image
@@ -159,7 +153,6 @@ def photo():
         db.session.commit()
         flash(f'Photo uploaded', 'success')
         return redirect(url_for('photo'))
-    #flash(f'Photo failed', 'error')
     return render_template('photo.html', title='Photo', form=form)
 
 
@@ -179,6 +172,16 @@ def comment():
         return redirect(url_for('home'))
     return render_template('comment.html', title='Comment', form=form)
 
+
+@app.route('/author/picture/<author>', methods=['GET'])
+def author_picture(author):
+    user = User.query.filter_by(username=author).first()
+    if user.image is None:
+        with open("flask_weekend_mini_project\static\default_image.png", "rb") as file:
+            image = bytearray(file.read())
+    else:
+        image = user.image
+    return app.response_class(image, mimetype='application/octet-stream')
 
 if __name__ == '__main__':
     #pylint.lint.Run(pylint_opts)
