@@ -1,14 +1,17 @@
-from flask import Flask, render_template, url_for, flash, redirect
+from flask import Flask, render_template, url_for, flash, redirect,request, make_response ,session
 from flask_sqlalchemy import SQLAlchemy
 from db_interface import User, Post
 from forms import RegistrationForm, LoginForm, Logout, CommentForm, PhotoForm
-from flask import request, make_response ,session
+import pylint.lint
 #from db_interface import get_all_users
+
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024  # limit size of uploads
+pylint_opts = ['--disable=line-too-long','--disable=no-member','--disable=f-string-without-interpolation','--disable=missing-function-docstring','flask_weekend_mini_project\\flaskblog.py']
 
 db = SQLAlchemy(app)
 
@@ -20,7 +23,7 @@ def home():
         flash(f"Logged in, Welcome {session['email']}")
     else:
         flash(f"You are not logged in")
-    return render_template('home.html', posts=Post.query.order_by(Post.id.desc()).all())    # reverse order
+    return render_template('home.html', posts=Post.query.order_by(Post.id.desc()).all())# reverse order
 
 
 @app.route("/admin")
@@ -36,7 +39,7 @@ def about():
 def register():
     form = RegistrationForm()
     user=User(username=form.username.data, email=form.email.data, password=form.password.data)
-    if form.validate_on_submit() and user.query.filter_by(username=form.username.data).first() == None and user.query.filter_by(email=form.email.data).first() == None:
+    if form.validate_on_submit() and user.query.filter_by(username=form.username.data).first() is None and user.query.filter_by(email=form.email.data).first() is None:
         db.session.add(user)
         db.session.commit()
         flash(f'Account created for {form.username.data}!', 'success')
@@ -47,7 +50,7 @@ def register():
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     try:
-        if request.cookies.get('email') == None or bool(request.cookies.get('remember')) == False:
+        if request.cookies.get('email') is None or bool(request.cookies.get('remember')) is False:
             print("entered here", bool(request.cookies.get('remember')))
             form = LoginForm()
         else:
@@ -59,8 +62,7 @@ def login():
     try:
         if session['email'] == "admin@blog.com":
             return redirect(url_for('admin'))
-        else:
-            return redirect(url_for('home'))
+        return redirect(url_for('home'))
     except Exception as e:
         print(f'Exception 3' + str(e))
 
@@ -80,10 +82,9 @@ def login():
 
             if form.email.data == 'admin@blog.com':
                 return redirect(url_for('admin'))
-            else:
-                return redirect(url_for('home'))
-        else:
-            flash('Login Unsuccessful. Please check username and password', 'danger')
+            return redirect(url_for('home'))
+
+        flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
 @app.route("/logout", methods=['GET', 'POST'])
@@ -93,8 +94,9 @@ def logout():
         #if remember me is check need to move sessions to long term cookies
         try:
             resp = make_response(redirect(url_for('login')))
-            if bool(session.get('remember')) == True:
-                email = request.cookies.get('email',session.get('email'))
+            if bool(session.get('remember')) is True:
+                request.cookies.get('email',session.get('email'))
+                #email = request.cookies.get('email',session.get('email'))
                 #resp = make_response('login.html', render_template('login.html', title='Login', form=LoginForm(email=email, password=password, remember=bool(session.get('remember')))))
                 resp.set_cookie('email', session.get('email'))#errorline
                 resp.set_cookie('remember', session['remember'])
@@ -102,8 +104,8 @@ def logout():
                 return resp
         except Exception as e:
             print(f'Exception 1 {e}')
-        
-        if request.cookies.get('email') == session.get('email'):
+
+        if request.cookies.get('email') is session.get('email'):
             delete_cookie(resp)
         clear_session()
         return resp
@@ -111,9 +113,9 @@ def logout():
 
 
 def clear_session():
-    session.clear()    
-    for x in session:
-        x=None
+    session.clear()
+    for X in session:
+        X=None
 
 
 def delete_cookie(resp):
@@ -150,7 +152,7 @@ def photo():
         db.session.commit()
         flash(f'Photo uploaded', 'success')
         return redirect(url_for('photo'))
-    # flash(f'Photo failed', 'error')
+    flash(f'Photo failed', 'error')
     return render_template('photo.html', title='Photo', form=form)
 
 
@@ -171,6 +173,9 @@ def comment():
     return render_template('comment.html', title='Comment', form=form)
 
 
+
+
 if __name__ == '__main__':
+    pylint.lint.Run(pylint_opts)
     app.run(debug=True)
     
