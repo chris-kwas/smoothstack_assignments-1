@@ -2,12 +2,10 @@ from flask import Flask, render_template, url_for, flash, redirect,request, make
 from flask_sqlalchemy import SQLAlchemy
 from db_interface import User, Post
 from forms import RegistrationForm, LoginForm, Logout, CommentForm, PhotoForm
+import logging
 import pylint.lint
-#from db_interface import get_all_users
-from PIL import Image
-import io
-import base64
-import glob, os
+
+logging.basicConfig(filename="flask_weekend_mini_project\logs.log", filemode='w',level = logging.DEBUG, format = '%(asctime)s:[%(levelname)-8s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
@@ -45,6 +43,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash(f'Account created for {form.username.data}!', 'success')
+        logging.info(f"new account created for {form.username.data}")
         return redirect(url_for('home'))
     elif form.validate_on_submit():
         flash(f'Account already exist for username {form.username.data} and/or email {form.email.data}! Please try again.', 'failure')
@@ -55,20 +54,18 @@ def register():
 def login():
     try:
         if request.cookies.get('email') is None or bool(request.cookies.get('remember')) is False:
-            print("entered here", bool(request.cookies.get('remember')))
             form = LoginForm()
         else:
-            print("entered there", bool(request.cookies.get('remember')))
             form = LoginForm(email=request.cookies.get('email'))
     except Exception as e:
-        print(f'Exception 2' + str(e))
+        logging.info(f'Exception 2' + str(e))
 
     try:
         if session['email'] == "admin@blog.com":
             return redirect(url_for('admin'))
         return redirect(url_for('home'))
     except Exception as e:
-        print(f'Exception 3' + str(e))
+        logging.info(f'Exception 3' + str(e))
 
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -79,11 +76,10 @@ def login():
             session['password'] = password
 
             if form.remember.data:
-                print("enter this area")
                 remember = request.form['remember']
                 session['remember'] = remember
 
-
+            logging.info(f"user account {email} signed in")
             if form.email.data == 'admin@blog.com':
                 return redirect(url_for('admin'))
             return redirect(url_for('home'))
@@ -101,10 +97,11 @@ def logout():
                 request.cookies.get('email',session.get('email'))
                 resp.set_cookie('email', session.get('email'))#errorline
                 resp.set_cookie('remember', session['remember'])
+                logging.info(f"user account {session.get('email')} signed off")
                 clear_session()
                 return resp
         except Exception as e:
-            print(f'Exception 1 {e}')
+            logging.info(f'Exception 1 {e}')
 
         if request.cookies.get('email') is session.get('email'):
             delete_cookie(resp)
@@ -115,8 +112,8 @@ def logout():
 
 def clear_session():
     session.clear()
-    for X in session:
-        X=None
+    for x in session:
+        x=None
 
 
 def delete_cookie(resp):
@@ -153,6 +150,7 @@ def photo():
         user.image = f.read()
         db.session.commit()
         flash(f'Photo uploaded', 'success')
+        logging.info('user {user.email} uploaded picture')
         return redirect(url_for('photo'))
     return render_template('photo.html', title='Photo', form=form)
 

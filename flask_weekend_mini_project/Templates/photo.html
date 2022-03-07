@@ -4,7 +4,7 @@
         {% extends "layout.html" %}  {% block content %}
          <form method="POST" action="{{ url_for('photo') }}" enctype="multipart/form-data">
                 {{ form.csrf_token }}
-
+            
              <p class="user-pic"><img src="{{ url_for('user_picture')}}"></p>
              <p>
 
