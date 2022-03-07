@@ -1,12 +1,8 @@
-from http import cookies
-from multiprocessing import connection
-from urllib import response
 from flask import Flask, render_template, url_for, flash, redirect
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import false
 from db_interface import User, Post
 from forms import RegistrationForm, LoginForm, Logout, CommentForm, PhotoForm
-from flask import request, make_response ,session, Response
+from flask import request, make_response ,session
 #from db_interface import get_all_users
 
 app = Flask(__name__)
@@ -15,33 +11,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024  # limit size of uploads
 
 db = SQLAlchemy(app)
-
-
-
-# posts = [
-#     {
-#         'author': 'Corey Schafer',
-#         'title': 'Blog Post 1',
-#         'content': 'First post content',
-#         'date_posted': 'April 20, 2018'
-#     },
-#     {
-#         'author': 'Jane Doe',
-#         'title': 'Blog Post 2',
-#         'content': 'Second post content',
-#         'date_posted': 'April 21, 2018'
-#     }
-# ]
-# users = [
-#      {
-#          'username': 'Corey Schafer',
-#          'email': 'email 1',
-#      },
-#      {
-#          'username': 'Jane Doe',
-#          'email': 'email 2',
-#      }
-# ]
 
 
 @app.route("/")
@@ -102,13 +71,6 @@ def login():
             session['email'] = email
             password = request.form['password']
             session['password'] = password
-
-            if form.remember.data is False:
-                print("box not checked")
-            else:
-                print("box checked")
-
-
 
             if form.remember.data:
                 print("enter this area")
