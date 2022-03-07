@@ -1,0 +1,22 @@
+<html>
+    <head></head>
+    <body>
+        {% extends "layout.html" %}  {% block content %}
+         <form method="POST" action="{{ url_for('photo') }}" enctype="multipart/form-data">
+                {{ form.csrf_token }}
+
+             <p class="user-pic"><img src="{{ url_for('user_picture')}}"></p>
+             <p>
+
+                   {{ form.photo.label }}<br>
+                    {{ form.photo }}
+                    {% for error in form.photo.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+             </p>
+                <p>
+                    <input type="submit" value="Upload">
+                </p>
+            </form>
+        {% endblock content %} "
+    </body>

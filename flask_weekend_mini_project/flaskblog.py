@@ -1,16 +1,19 @@
 from http import cookies
 from multiprocessing import connection
+from urllib import response
 from flask import Flask, render_template, url_for, flash, redirect
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import false
 from db_interface import User, Post
-from forms import RegistrationForm, LoginForm, Logout
+from forms import RegistrationForm, LoginForm, Logout, CommentForm, PhotoForm
 from flask import request, make_response ,session, Response
 #from db_interface import get_all_users
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024  # limit size of uploads
+
 db = SQLAlchemy(app)
 
 
@@ -48,8 +51,7 @@ def home():
         flash(f"Logged in, Welcome {session['email']}")
     else:
         flash(f"You are not logged in")
-
-    return render_template('home.html', posts=Post.query.all())
+    return render_template('home.html', posts=Post.query.order_by(Post.id.desc()).all())    # reverse order
 
 
 @app.route("/admin")
@@ -77,22 +79,22 @@ def register():
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     try:
-        if request.cookies.get('email') == None:
-            #print("entered here", request.cookies.get(email))
+        if request.cookies.get('email') == None or bool(request.cookies.get('remember')) == False:
+            print("entered here", bool(request.cookies.get('remember')))
             form = LoginForm()
         else:
-            print("entered there")
-            form = LoginForm(form=LoginForm(email=session.get('email')))
-    except:
-        pass
+            print("entered there", bool(request.cookies.get('remember')))
+            form = LoginForm(email=request.cookies.get('email'))
+    except Exception as e:
+        print(f'Exception 2' + str(e))
 
     try:
         if session['email'] == "admin@blog.com":
             return redirect(url_for('admin'))
         else:
             return redirect(url_for('home'))
-    except:
-        pass
+    except Exception as e:
+        print(f'Exception 3' + str(e))
 
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -102,25 +104,25 @@ def login():
             password = request.form['password']
             session['password'] = password
 
-            if  form.remember.data:
-                print("box checked")
-            else:
+            if form.remember.data is False:
                 print("box not checked")
+            else:
+                print("box checked")
 
 
 
             if form.remember.data:
+                print("enter this area")
                 remember = request.form['remember']
                 session['remember'] = remember
+
+
             if form.email.data == 'admin@blog.com':
                 return redirect(url_for('admin'))
             else:
                 return redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
-
-    for x in request.cookies:
-        print(x)
     return render_template('login.html', title='Login', form=form)
 
 @app.route("/logout", methods=['GET', 'POST'])
@@ -129,20 +131,20 @@ def logout():
     if form.is_submitted():
         #if remember me is check need to move sessions to long term cookies
         try:
-            if bool(session['remember']) == True:
+            resp = make_response(redirect(url_for('login')))
+            if bool(session.get('remember')) == True:
                 email = request.cookies.get('email',session.get('email'))
-                password = request.cookies.get('password',True)
-                print("remember = ", bool(session['remember']))
-                resp = make_response(render_template('login.html',title='Login',form=LoginForm(email=email,password=password,remember=bool(session.get('remember')))))
+                #resp = make_response('login.html', render_template('login.html', title='Login', form=LoginForm(email=email, password=password, remember=bool(session.get('remember')))))
+                resp.set_cookie('email', session.get('email'))#errorline
+                resp.set_cookie('remember', session['remember'])
                 clear_session()
-                for x in session:
-                    x=None
                 return resp
-        except:
-            pass
+        except Exception as e:
+            print(f'Exception 1 {e}')
         clear_session()
-        return redirect(url_for('login'))
-    return render_template('logout.html',form=form)
+        delete_cookie(resp)
+        return resp
+    return render_template('logout.html', form=form)
 
 
 def clear_session():
@@ -151,19 +153,61 @@ def clear_session():
         x=None
 
 
+def delete_cookie(resp):
+    resp.set_cookie('remember','', max_age=0)
+    resp.set_cookie('email','', max_age=0)
+    return resp
 
-# @app.route('/cookie', methods=['GET','POST'])  
-# def visit():
-#     #cookies is a dictionary
-#     #.get asks for specificed key(visit-count) if key doesnt exists creates it and sets value to second value (0)
-#     visit_count=request.cookies.get('visit-count', 0)#return string
-#     message =  "This is visit number {} ".format({int(visit_count)})
-#     resp = make_response(render_template('cookie.html', amt=message))#return http respose object
-#     vscount = int(visit_count) + 1
-#     resp.set_cookie('visit-count', str(vscount))#cookie values are strings
-#     return resp
 
+@app.route('/user/picture', methods=['GET'])
+def user_picture():
+    # allows caching of picture for better performance
+    user = db.session.query(User).filter_by(email=session['email']).first()
+    if user.image is None:
+        with open("static/default.jpg", "rb") as file:
+            image = bytearray(file.read())
+    else:
+        image = user.image
+    return app.response_class(image, mimetype='application/octet-stream')
+
+
+@app.route("/photo", methods=['GET', 'POST'])
+def photo():
+    session_email = session.get('email')
+    if session_email is None or session_email == "":
+        flash(f'You need to log in to view or post photo', 'warning')
+        return redirect(url_for('login'))
+    # to allow file upload need following in form html: enctype = "multipart/form-data"
+    form = PhotoForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        user = db.session.query(User).filter_by(email=session['email']).first()
+        user.image_file = form.photo.name
+        f = form.photo.data
+        user.image = f.read()
+        db.session.commit()
+        flash(f'Photo uploaded', 'success')
+        return redirect(url_for('photo'))
+    # flash(f'Photo failed', 'error')
+    return render_template('photo.html', title='Photo', form=form)
+
+
+@app.route("/comment", methods=['GET', 'POST'])
+def comment():
+    form = CommentForm()
+    session_email = session.get('email')
+    if session_email is None or session_email == "":
+        flash(f'You need to log in to comment', 'warning')
+        return redirect(url_for('login'))
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=session['email']).first()
+        post = Post(title=form.title.data, content=form.text.data, user_id=user.id)
+        db.session.add(post)
+        db.session.commit()
+        flash(f'Post created', 'success')
+        return redirect(url_for('home'))
+    return render_template('comment.html', title='Comment', form=form)
 
 
 if __name__ == '__main__':
     app.run(debug=True)
+    

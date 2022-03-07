@@ -14,6 +14,8 @@ class User(db.Model):
     image_file = db.Column(db.String(120), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
+    image = db.Column(db.LargeBinary, nullable=True)
+
 
     # PRIMARY KEY (id),
     # UNIQUE (username),
@@ -51,14 +53,15 @@ class Post(db.Model):
         return f"Post('{self.title}', '{self.date_posted}')"
 
 
-
 def create_db():
     db.create_all()
+
 
 def add_user():
     admin = User(username='user', email='other@example.com',password='12334')
     db.session.add(admin)
     db.session.commit()
+
 
 def dump_users():
     print(User.query.all())
@@ -76,18 +79,15 @@ def added_post():
 
 
 def get_all_users():
-    #user = User.query.filter_by(username='admin')
+    # user = User.query.filter_by(username='admin')
     # print("user posts : ", user.posts)
-    #posts = Post.query.all()
-    #load_db()
+    # posts = Post.query.all()
+    # load_db()
     users = User.query.all()
     print(print(users))
     return users
 
-
-
-
-
-
 if __name__ == '__main__':
-    print(get_all_users())
+    create_db()
+    add_user()
+    #print(get_all_users())

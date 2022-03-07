@@ -1,0 +1,26 @@
+<html>
+    <head></head>
+    <body>
+        {% extends "layout.html" %}  {% block content %}
+         <form method="POST" action="{{ url_for('comment') }}">
+                {{ form.csrf_token }}
+             <p>
+                   {{ form.title.label }}<br>
+                    {{ form.title(rows=1, cols=40) }}
+                    {% for error in form.title.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+             </p>
+                <p>
+                    {{ form.text.label }}<br>
+                    {{ form.text(rows=5, cols=40) }}
+                    {% for error in form.text.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    <input type="submit" value="Post">
+                </p>
+            </form>
+        {% endblock content %} "
+    </body>

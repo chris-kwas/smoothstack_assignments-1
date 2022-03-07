@@ -1,5 +1,6 @@
 from flask import Flask, redirect, render_template, url_for
 from flask import request, make_response ,session
+from numpy import delete
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
@@ -14,6 +15,8 @@ def visit():
     resp = make_response(render_template('cookie.html', amt=message))#return http respose object
     vscount = int(visit_count) + 1
     resp.set_cookie('visit-count', str(vscount))#cookie values are strings
+    if visit_count == "5":
+        resp.set_cookie('visit-count','foo', max_age=0)
     return resp
 
 
