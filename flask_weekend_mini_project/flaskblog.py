@@ -6,7 +6,8 @@ import logging
 import pylint.lint
 
 logging.basicConfig(filename="flask_weekend_mini_project\logs.log", filemode='w',level = logging.DEBUG, format = '%(asctime)s:[%(levelname)-8s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.DEBUG)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
@@ -43,7 +44,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash(f'Account created for {form.username.data}!', 'success')
-        logging.info(f"new account created for {form.username.data}")
+        logging.info("new account created for {form.username.data}")
         return redirect(url_for('home'))
     elif form.validate_on_submit():
         flash(f'Account already exist for username {form.username.data} and/or email {form.email.data}! Please try again.', 'failure')
@@ -52,13 +53,10 @@ def register():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    try:
-        if request.cookies.get('email') is None or bool(request.cookies.get('remember')) is False:
-            form = LoginForm()
-        else:
-            form = LoginForm(email=request.cookies.get('email'))
-    except Exception as e:
-        logging.info(f'Exception 2' + str(e))
+    if request.cookies.get('email') is None or bool(request.cookies.get('remember')) is False:
+        form = LoginForm()
+    else:
+        form = LoginForm(email=request.cookies.get('email'))
 
     try:
         if session['email'] == "admin@blog.com":
@@ -79,7 +77,7 @@ def login():
                 remember = request.form['remember']
                 session['remember'] = remember
 
-            logging.info(f"user account {email} signed in")
+            logging.info(f"user account %s signed in"%(email))
             if form.email.data == 'admin@blog.com':
                 return redirect(url_for('admin'))
             return redirect(url_for('home'))
@@ -93,15 +91,16 @@ def logout():
     if form.is_submitted():
         try:
             resp = make_response(redirect(url_for('login')))
+            logging.info(f"user account %s logged out"%(session.get('email')))
             if bool(session.get('remember')) is True:
                 request.cookies.get('email',session.get('email'))
                 resp.set_cookie('email', session.get('email'))#errorline
                 resp.set_cookie('remember', session['remember'])
-                logging.info(f"user account {session.get('email')} signed off")
                 clear_session()
                 return resp
         except Exception as e:
             logging.info(f'Exception 1 {e}')
+            pass
 
         if request.cookies.get('email') is session.get('email'):
             delete_cookie(resp)
@@ -142,7 +141,7 @@ def photo():
         return redirect(url_for('login'))
     # to allow file upload need following in form html: enctype = "multipart/form-data"
     form = PhotoForm()
-    flash(f'Files needs to be of size no more than 1024mb * 1024mb', 'warning')
+    
     if request.method == 'POST' and form.validate_on_submit():
         user = db.session.query(User).filter_by(email=session['email']).first()
         user.image_file = form.photo.name
@@ -152,6 +151,7 @@ def photo():
         flash(f'Photo uploaded', 'success')
         logging.info('user {user.email} uploaded picture')
         return redirect(url_for('photo'))
+    flash(f'Files needs to be of size no more than 1gb', 'warning')
     return render_template('photo.html', title='Photo', form=form)
 
 
