@@ -4,8 +4,10 @@ from db_interface import User, Post
 from forms import RegistrationForm, LoginForm, Logout, CommentForm, PhotoForm
 import pylint.lint
 #from db_interface import get_all_users
-
-
+from PIL import Image
+import io
+import base64
+import glob, os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
@@ -23,7 +25,12 @@ def home():
         flash(f"Logged in, Welcome {session['email']}")
     else:
         flash(f"You are not logged in")
-    return render_template('home.html', posts=Post.query.order_by(Post.id.desc()).all())# reverse order
+    picture = db.session.query(User).filter_by(email=session['email']).first().image
+    # picture = Image.frombytes(Image.getmodebands(picture),(100,100),picture)
+    with open(picture,  encoding='0xff ') as file:
+        picture = bytearray(file.read())
+
+    return render_template('home.html', posts=Post.query.order_by(Post.id.desc()).all(),image=picture)# reverse order
 
 
 @app.route("/admin")
@@ -152,7 +159,7 @@ def photo():
         db.session.commit()
         flash(f'Photo uploaded', 'success')
         return redirect(url_for('photo'))
-    flash(f'Photo failed', 'error')
+    #flash(f'Photo failed', 'error')
     return render_template('photo.html', title='Photo', form=form)
 
 
