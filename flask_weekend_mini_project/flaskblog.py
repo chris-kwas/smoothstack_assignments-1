@@ -184,6 +184,4 @@ def author_picture(author):
     return app.response_class(image, mimetype='application/octet-stream')
 
 if __name__ == '__main__':
-    #pylint.lint.Run(pylint_opts)
     app.run(debug=True)
-    
