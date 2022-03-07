@@ -145,6 +145,7 @@ def photo():
         return redirect(url_for('login'))
     # to allow file upload need following in form html: enctype = "multipart/form-data"
     form = PhotoForm()
+    flash(f'Files needs to be size no more than 1024mb * 1024mb', 'warning')
     if request.method == 'POST' and form.validate_on_submit():
         user = db.session.query(User).filter_by(email=session['email']).first()
         user.image_file = form.photo.name
