@@ -1,8 +1,8 @@
+import logging
 from flask import Flask, render_template, url_for, flash, redirect,request, make_response ,session
 from flask_sqlalchemy import SQLAlchemy
 from db_interface import User, Post
 from forms import RegistrationForm, LoginForm, Logout, CommentForm, PhotoForm
-import logging
 import pylint.lint
 
 logging.basicConfig(filename="flask_weekend_mini_project\logs.log", filemode='w',level = logging.DEBUG, format = '%(asctime)s:[%(levelname)-8s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024  # limit size of uploads
-pylint_opts = ['--disable=line-too-long','--disable=no-member','--disable=f-string-without-interpolation','--disable=missing-function-docstring','flask_weekend_mini_project\\flaskblog.py']
+pylint_opts = ['--disable=line-too-long','--disable=no-member','--disable=f-string-without-interpolation','--disable=missing-function-docstring','--disable=logging-not-lazy','--disable=invalid-name','flask_weekend_mini_project\\flaskblog.py']
 
 db = SQLAlchemy(app)
 
@@ -141,7 +141,8 @@ def photo():
         return redirect(url_for('login'))
     # to allow file upload need following in form html: enctype = "multipart/form-data"
     form = PhotoForm()
-    
+
+
     if request.method == 'POST' and form.validate_on_submit():
         user = db.session.query(User).filter_by(email=session['email']).first()
         user.image_file = form.photo.name
