@@ -35,3 +35,42 @@ class Post(db.Model):
     # FOREIGN KEY(user_id) REFERENCES user (id)
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"
+
+def create_db():
+    db.create_all()
+
+
+def add_user():
+    admin = User(username='user', email='other@example.com',password='12334')
+    db.session.add(admin)
+    db.session.commit()
+
+
+def dump_users():
+    print(User.query.all())
+
+
+def added_post():
+    user = User.query.filter_by(username='admin').first()
+    post = Post(title='how to have fun', content='Some text')
+    user.posts.append(post)
+    db.session.add(post)
+    db.session.commit()
+    print(Post.query.all())
+    print(User.query.all())
+    print(user.posts)
+
+
+def get_all_users():
+    # user = User.query.filter_by(username='admin')
+    # print("user posts : ", user.posts)
+    # posts = Post.query.all()
+    # load_db()
+    users = User.query.all()
+    print(print(users))
+    return users
+
+if __name__ == '__main__':
+    create_db()
+    add_user()
+    #print(get_all_users())
