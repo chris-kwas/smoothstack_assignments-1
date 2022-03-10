@@ -1,6 +1,5 @@
 import pytest
 #from flaskblog import app
-import json
 #pytest looks for files that begin with test_ automatically
 def test_base_route():
     # app = Flask(__name__)

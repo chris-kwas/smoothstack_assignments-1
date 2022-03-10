@@ -1,5 +1,4 @@
-import flaskblog
-
+from flask_weekend_mini_project import flaskblog
 #test functions should start with the word test
 def test_new_user():
     """

@@ -2,8 +2,8 @@ from distutils.command.config import config
 import logging
 from flask import Flask, render_template, url_for, flash, redirect,request, make_response ,session
 from flask_sqlalchemy import SQLAlchemy
-import db_interface
 from forms import RegistrationForm, LoginForm, Logout, CommentForm, PhotoForm
+import unittest
 
 #logging.basicConfig(filename="flask_weekend_mini_project\logs.log", filemode='w',level = logging.DEBUG, format = '%(asctime)s:[%(levelname)-8s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 log = logging.getLogger('werkzeug')
@@ -15,6 +15,7 @@ log.setLevel(logging.DEBUG)
 pylint_opts = ['--disable=line-too-long','--disable=no-member','--disable=f-string-without-interpolation','--disable=missing-function-docstring','--disable=logging-not-lazy','--disable=invalid-name','flask_weekend_mini_project\\flaskblog.py']
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy()# done here so that db is importable
+import db_interface
 
 class Config:
     TESTING = True
@@ -24,7 +25,6 @@ def create_app(config_class=Config):
     app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
     app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024  # limit size of uploads
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
     db.init_app(app)
     return app
 
@@ -55,7 +55,7 @@ def about():
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
-    user=db_interface.User(username=form.username.data, email=form.email.data, password=form.password.data)
+    user= db_interface.User(username=form.username.data, email=form.email.data, password=form.password.data)
     if form.validate_on_submit() and user.query.filter_by(username=form.username.data).first() is None and user.query.filter_by(email=form.email.data).first() is None:
         db.session.add(user)
         db.session.commit()
@@ -184,7 +184,7 @@ def comment():
         post = db_interface.Post(title=form.title.data, content=form.text.data, user_id=user.id)
         db.session.add(post)
         db.session.commit()
-        flash(f'Post created', 'success')
+        flash(f'db_interface.Post created', 'success')
         return redirect(url_for('home'))
     return render_template('comment.html', title='Comment', form=form)
 
@@ -200,4 +200,5 @@ def author_picture(author):
     return app.response_class(image, mimetype='application/octet-stream')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    #app.run(debug=True)
+    unittest.main()

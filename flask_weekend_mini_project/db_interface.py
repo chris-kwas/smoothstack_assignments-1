@@ -1,11 +1,12 @@
 from datetime import datetime
 # from email.policy import default
 # from flask_sqlalchemy import SQLAlchemy
-from flaskblog import db
+
 # app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 # db = SQLAlchemy(app)
-
+import flaskblog
+db = flaskblog.db
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
@@ -14,8 +15,6 @@ class User(db.Model):
     password = db.Column(db.String(60), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
     image = db.Column(db.LargeBinary, nullable=True)
-
-
     # PRIMARY KEY (id),
     # UNIQUE (username),
     # UNIQUE (email)
