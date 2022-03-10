@@ -1,20 +1,36 @@
+from distutils.command.config import config
 import logging
 from flask import Flask, render_template, url_for, flash, redirect,request, make_response ,session
 from flask_sqlalchemy import SQLAlchemy
-from db_interface import User, Post
+import db_interface
 from forms import RegistrationForm, LoginForm, Logout, CommentForm, PhotoForm
-import pylint.lint
 
-logging.basicConfig(filename="flask_weekend_mini_project\logs.log", filemode='w',level = logging.DEBUG, format = '%(asctime)s:[%(levelname)-8s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+#logging.basicConfig(filename="flask_weekend_mini_project\logs.log", filemode='w',level = logging.DEBUG, format = '%(asctime)s:[%(levelname)-8s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.DEBUG)
-app = Flask(__name__)
-app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024  # limit size of uploads
+#app = Flask(__name__)
+# app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+# app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024  # limit size of uploads
 pylint_opts = ['--disable=line-too-long','--disable=no-member','--disable=f-string-without-interpolation','--disable=missing-function-docstring','--disable=logging-not-lazy','--disable=invalid-name','flask_weekend_mini_project\\flaskblog.py']
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+db = SQLAlchemy()# done here so that db is importable
 
-db = SQLAlchemy(app)
+class Config:
+    TESTING = True
+
+def create_app(config_class=Config):
+    app = Flask(__name__)
+    app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+    app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024  # limit size of uploads
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+    db.init_app(app)
+    return app
+
+
+app = create_app()
+
 
 
 @app.route("/")
@@ -24,12 +40,12 @@ def home():
         flash(f"Logged in, Welcome {session['email']}")
     else:
         flash(f"You are not logged in")
-    return render_template('home.html', posts=Post.query.order_by(Post.id.desc()).all())# reverse order
+    return render_template('home.html', posts= db_interface.Post.query.order_by(db_interface.Post.id.desc()).all())# reverse order
 
 
 @app.route("/admin")
 def admin():
-    return render_template('admin.html', users=User.query.all())
+    return render_template('admin.html', users=db_interface.User.query.all())
 
 @app.route("/about")
 def about():
@@ -39,7 +55,7 @@ def about():
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
-    user=User(username=form.username.data, email=form.email.data, password=form.password.data)
+    user=db_interface.User(username=form.username.data, email=form.email.data, password=form.password.data)
     if form.validate_on_submit() and user.query.filter_by(username=form.username.data).first() is None and user.query.filter_by(email=form.email.data).first() is None:
         db.session.add(user)
         db.session.commit()
@@ -66,7 +82,7 @@ def login():
         logging.info(f'Exception 3' + str(e))
 
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        user = db_interface.User.query.filter_by(email=form.email.data).first()
         if user is not None and user.password == form.password.data:
             email = request.form['email']
             session['email'] = email
@@ -124,7 +140,7 @@ def delete_cookie(resp):
 @app.route('/user/picture', methods=['GET'])
 def user_picture():
     # allows caching of picture for better performance
-    user = db.session.query(User).filter_by(email=session['email']).first()
+    user = db.session.query(db_interface.User).filter_by(email=session['email']).first()
     if user.image is None:
         with open("flask_weekend_mini_project\static\default_image.png", "rb") as file:
             image = bytearray(file.read())
@@ -144,7 +160,7 @@ def photo():
 
 
     if request.method == 'POST' and form.validate_on_submit():
-        user = db.session.query(User).filter_by(email=session['email']).first()
+        user = db.session.query(db_interface.User).filter_by(email=session['email']).first()
         user.image_file = form.photo.name
         f = form.photo.data
         user.image = f.read()
@@ -164,8 +180,8 @@ def comment():
         flash(f'You need to log in to comment', 'warning')
         return redirect(url_for('login'))
     if form.validate_on_submit():
-        user = User.query.filter_by(email=session['email']).first()
-        post = Post(title=form.title.data, content=form.text.data, user_id=user.id)
+        user = db_interface.User.query.filter_by(email=session['email']).first()
+        post = db_interface.Post(title=form.title.data, content=form.text.data, user_id=user.id)
         db.session.add(post)
         db.session.commit()
         flash(f'Post created', 'success')
@@ -175,7 +191,7 @@ def comment():
 
 @app.route('/author/picture/<author>', methods=['GET'])
 def author_picture(author):
-    user = User.query.filter_by(username=author).first()
+    user = db_interface.User.query.filter_by(username=author).first()
     if user.image is None:
         with open("flask_weekend_mini_project\static\default_image.png", "rb") as file:
             image = bytearray(file.read())

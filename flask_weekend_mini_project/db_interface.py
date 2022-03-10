@@ -1,11 +1,10 @@
 from datetime import datetime
-from email.policy import default
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-db = SQLAlchemy(app)
+# from email.policy import default
+# from flask_sqlalchemy import SQLAlchemy
+from flaskblog import db
+# app = Flask(__name__)
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+# db = SQLAlchemy(app)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
