@@ -1,11 +1,12 @@
 from datetime import datetime
+
+from flask_weekend_mini_project import flaskblog
 # from email.policy import default
 # from flask_sqlalchemy import SQLAlchemy
 
 # app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 # db = SQLAlchemy(app)
-import flaskblog
 db = flaskblog.db
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
