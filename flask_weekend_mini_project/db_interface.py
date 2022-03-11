@@ -68,7 +68,7 @@ def get_all_users():
     print(print(users))
     return users
 
-if __name__ == '__main__':
-    create_db()
-    add_user()
-    #print(get_all_users())
+# if __name__ == '__main__':
+#     create_db()
+#     add_user()
+#     #print(get_all_users())
